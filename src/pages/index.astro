@@ -47,17 +47,27 @@ import { barbershopJsonLd } from '../lib/jsonld';
     watch.forEach((el) => io.observe(el));
   }
 
-  // Карта Яндекса подгружается, когда секция подходит к экрану (не на старте страницы)
+  // Карта: живой виджет Яндекса тяжёлый. На телефоне — только по нажатию (иначе лагает скролл),
+  // на десктопе — сам, когда секция в кадре и скролл остановился.
   document.querySelectorAll<HTMLElement>('[data-map-src]').forEach((box) => {
-    const io = new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting) return;
-      io.disconnect();
+    let loaded = false;
+    const load = () => {
+      if (loaded) return;
+      loaded = true;
       const f = document.createElement('iframe');
-      f.src = box.dataset.mapSrc!; f.title = 'Угол 361 на Яндекс Картах'; f.loading = 'lazy'; f.allowFullscreen = true;
-      f.addEventListener('load', () => box.querySelector('.find__map-wait')?.remove());
+      f.src = box.dataset.mapSrc!; f.title = 'Угол 361 на Яндекс Картах'; f.allowFullscreen = true;
       box.append(f);
-    }, { rootMargin: '600px 0px' });
-    io.observe(box);
+      box.querySelector('[data-map-open]')?.remove();
+    };
+    box.querySelector('[data-map-open]')?.addEventListener('click', load);
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      let t = 0;
+      const io = new IntersectionObserver(([e]) => {
+        clearTimeout(t);
+        if (e.isIntersecting) t = window.setTimeout(() => { load(); io.disconnect(); }, 400);
+      }, { threshold: 0.4 });
+      io.observe(box);
+    }
   });
 </script>
 <script>

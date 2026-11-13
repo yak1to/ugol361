@@ -1,6 +1,8 @@
 ---
 import { site } from '../../config/site';
 import RouteShop from '../ui/RouteShop.astro';
+import { Picture } from 'astro:assets';
+import mapStatic from '../../assets/photos/map-static.png';
 const a = site.address;
 const ROUTE = 'M150 270 C 260 300, 320 165, 450 182 S 580 288, 686 294';
 // мобильная схема: вертикально, вывеска внизу справа (та же графика, масштаб .66)
@@ -48,8 +50,10 @@ const METRO_M = '453.9,306.2 424.7,232.3 400,275.5 375.4,232.3 346.1,306.2 337.5
   </figure>
 
   <!-- Карта: виджет Яндекса на карточке барбершопа, грузится, когда секция рядом -->
+  <!-- Лёгкая статичная карта; живой виджет Яндекса грузится по нажатию (на десктопе — сам, когда секция в кадре) -->
   <div class="find__map" data-map data-map-src={site.mapEmbed}>
-    <div class="find__map-wait" aria-hidden="true"><span class="find__pin"></span></div>
+    <Picture src={mapStatic} formats={['avif', 'webp']} widths={[650]} sizes="100vw" alt="Карта: барбершоп на Нахимовском проспекте, 40, рядом с метро Профсоюзная" loading="lazy" class="find__poster" />
+    <button class="btn find__map-open" type="button" data-map-open>Открыть карту</button>
   </div>
   <div class="find__map-links">
     <a class="btn" href={site.mapRoute} target="_blank" rel="noopener">Построить маршрут</a>
@@ -77,8 +81,9 @@ const METRO_M = '453.9,306.2 424.7,232.3 400,275.5 375.4,232.3 346.1,306.2 337.5
 
   .find__map { position: relative; margin-top: clamp(48px, 6vw, 96px); aspect-ratio: 16 / 7; overflow: hidden; border: 3px solid var(--ink); background: #e8e6df; }
   .find__map :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-  .find__map-wait { position: absolute; inset: 0; display: grid; place-items: center; }
-  .find__pin { width: 26px; height: 26px; border-radius: 50% 50% 50% 0; rotate: -45deg; background: var(--door-red); border: 3px solid var(--ink); }
+  .find__map :global(picture) { display: contents; }
+  .find__map :global(.find__poster) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 58% 40%; }
+  .find__map-open { position: absolute; left: 50%; bottom: 20px; translate: -50% 0; box-shadow: 0 6px 18px rgba(0,0,0,.25); }
   .find__map-links { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; margin-top: 20px; }
 
   @media (max-width: 760px) {
