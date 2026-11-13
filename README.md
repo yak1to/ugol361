@@ -12,6 +12,14 @@ npm run build     # статика в dist/
 npm run preview   # проверить сборку
 ```
 
+## Где опубликован
+- **GitHub Pages** (открывается в РФ без VPN): https://yak1to.github.io/ugol361/
+  Обновить: `npm run deploy:pages` (собирает с `base: /ugol361` и пушит в ветку `gh-pages`).
+- **Vercel** (запасной): https://ugol361-alpha.vercel.app — `npx vercel deploy --prod`.
+
+Адрес и подпапка задаются в `astro.config.mjs` через `DEPLOY=pages`. Все внутренние ссылки
+строятся через `src/lib/url.ts`, поэтому сайт работает и в корне домена, и в подпапке.
+
 Страницы: `/` — сайт, `/prices` — цены, `/pitch` — экран для владельца (noindex), `/styleguide` — токены и компоненты (noindex).
 
 ## Как перекрасить под другой салон
