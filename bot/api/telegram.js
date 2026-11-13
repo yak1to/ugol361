@@ -309,14 +309,23 @@ var photoKb = (n, total) => [
 function barbersMenu(c) {
   return [
     `<b>\u041C\u0430\u0441\u0442\u0435\u0440\u0430 \u043D\u0430 \u0441\u0430\u0439\u0442\u0435</b>
-${c.barbers.map((b, n) => `${n + 1}. ${esc(b.name)} \u2014 ${esc(b.role)}`).join("\n")}`,
+${c.barbers.map((b, n) => `${n + 1}. ${esc(b.name)} \u2014 ${esc(b.role)}${b.photo ? " \u{1F4F7}" : " (\u0431\u0435\u0437 \u0444\u043E\u0442\u043E)"}`).join("\n")}
+
+\u041D\u0430\u0436\u043C\u0438\u0442\u0435 \u043D\u0430 \u043C\u0430\u0441\u0442\u0435\u0440\u0430, \u0447\u0442\u043E\u0431\u044B \u0438\u0437\u043C\u0435\u043D\u0438\u0442\u044C \u0438\u043C\u044F, \u0441\u043F\u0435\u0446\u0438\u0430\u043B\u0438\u0437\u0430\u0446\u0438\u044E \u0438\u043B\u0438 \u0444\u043E\u0442\u043E.`,
     [
-      ...c.barbers.map((b, n) => [{ text: `\u270F\uFE0F ${b.name}`, data: `q:bname:${n}` }, { text: "\u0427\u0435\u043C \u0437\u0430\u043D\u0438\u043C\u0430\u0435\u0442\u0441\u044F", data: `q:brole:${n}` }, { text: "\u{1F5D1}", data: `bdel:${n}` }]),
+      ...chunk(c.barbers.map((b, n) => ({ text: `${b.photo ? "\u{1F4F7} " : ""}${b.name}`, data: `bi:${n}` })), 2),
       [{ text: "\u2795 \u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C \u043C\u0430\u0441\u0442\u0435\u0440\u0430", data: "q:badd" }],
       [{ text: "\u2190 \u041C\u0435\u043D\u044E", data: "m" }]
     ]
   ];
 }
+var barberKb = (c, n) => [
+  [{ text: "\u270F\uFE0F \u0418\u043C\u044F", data: `q:bname:${n}` }, { text: "\u270F\uFE0F \u0427\u0435\u043C \u0437\u0430\u043D\u0438\u043C\u0430\u0435\u0442\u0441\u044F", data: `q:brole:${n}` }],
+  [{ text: c.barbers[n].photo ? "\u{1F4F7} \u0417\u0430\u043C\u0435\u043D\u0438\u0442\u044C \u0444\u043E\u0442\u043E" : "\u{1F4F7} \u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C \u0444\u043E\u0442\u043E", data: `q:bphoto:${n}` }],
+  ...c.barbers[n].photo ? [[{ text: "\u2716\uFE0F \u0423\u0431\u0440\u0430\u0442\u044C \u0444\u043E\u0442\u043E", data: `bpx:${n}` }]] : [],
+  [{ text: "\u{1F5D1} \u0423\u0431\u0440\u0430\u0442\u044C \u043C\u0430\u0441\u0442\u0435\u0440\u0430 \u0441 \u0441\u0430\u0439\u0442\u0430", data: `bdel:${n}` }],
+  [{ text: "\u2190 \u041A \u043C\u0430\u0441\u0442\u0435\u0440\u0430\u043C", data: "br" }]
+];
 var ratingMenu = (c) => [
   `<b>\u0420\u0435\u0439\u0442\u0438\u043D\u0433 \u043D\u0430 \u0441\u0430\u0439\u0442\u0435</b>
 ${c.rating.value.toFixed(1)} \xB7 ${c.rating.votes} \u043E\u0446\u0435\u043D\u043E\u043A \xB7 ${c.rating.reviews} \u043E\u0442\u0437\u044B\u0432\u043E\u0432
@@ -359,6 +368,7 @@ var QUESTIONS = {
   bname: (c, a) => [`\u0418\u043C\u044F \u043C\u0430\u0441\u0442\u0435\u0440\u0430 \u0432\u043C\u0435\u0441\u0442\u043E \xAB${esc(c.barbers[+a]?.name)}\xBB:`],
   brole: (c, a) => [`\u0427\u0435\u043C \u0437\u0430\u043D\u0438\u043C\u0430\u0435\u0442\u0441\u044F ${esc(c.barbers[+a]?.name)}:`, "\u0421\u0442\u0440\u0438\u0436\u043A\u0438, \u0431\u043E\u0440\u043E\u0434\u0430"],
   badd: () => ["\u041D\u043E\u0432\u044B\u0439 \u043C\u0430\u0441\u0442\u0435\u0440 \u0432 \u0444\u043E\u0440\u043C\u0430\u0442\u0435 <b>\u0418\u043C\u044F \u2014 \u0447\u0435\u043C \u0437\u0430\u043D\u0438\u043C\u0430\u0435\u0442\u0441\u044F</b>:", "\u041A\u043E\u043B\u044F \u2014 \u0441\u0442\u0440\u0438\u0436\u043A\u0438, \u0444\u0435\u0439\u0434\u044B"],
+  bphoto: (c, a) => [`\u041F\u0440\u0438\u0448\u043B\u0438\u0442\u0435 <b>\u0444\u043E\u0442\u043E ${esc(c.barbers[+a]?.name)} \u043E\u0442\u0432\u0435\u0442\u043E\u043C \u043D\u0430 \u044D\u0442\u043E \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0435</b>. \u041B\u0443\u0447\u0448\u0435 \u0432\u0435\u0440\u0442\u0438\u043A\u0430\u043B\u044C\u043D\u043E\u0435, \u043B\u0438\u0446\u043E \u043F\u043E \u0446\u0435\u043D\u0442\u0440\u0443.`, "\u0424\u043E\u0442\u043E \u043C\u0430\u0441\u0442\u0435\u0440\u0430"],
   rv: () => ["\u041E\u0446\u0435\u043D\u043A\u0430 \u043D\u0430 \u042F\u043D\u0434\u0435\u043A\u0441 \u041A\u0430\u0440\u0442\u0430\u0445, \u043D\u0430\u043F\u0440\u0438\u043C\u0435\u0440 4.9:", "5.0"],
   rvo: () => ["\u0421\u043A\u043E\u043B\u044C\u043A\u043E \u043E\u0446\u0435\u043D\u043E\u043A:", "134"],
   rre: () => ["\u0421\u043A\u043E\u043B\u044C\u043A\u043E \u043E\u0442\u0437\u044B\u0432\u043E\u0432:", "117"],
@@ -385,6 +395,16 @@ var nameAndRest = (s) => {
   if (m.length < 2) throw new UserError("\u041D\u0443\u0436\u0435\u043D \u0444\u043E\u0440\u043C\u0430\u0442 \xAB\u041D\u0430\u0437\u0432\u0430\u043D\u0438\u0435 \u2014 \u0437\u043D\u0430\u0447\u0435\u043D\u0438\u0435\xBB, \u0447\u0435\u0440\u0435\u0437 \u0442\u0438\u0440\u0435.");
   return [text(m[0], 60), m.slice(1).join(" \u2014 ")];
 };
+async function photoFromMessage(msg) {
+  const sizes = msg.photo;
+  const doc = msg.document && /^image\/(jpe?g)$/.test(msg.document.mime_type) ? msg.document : void 0;
+  if (!sizes?.length && !doc) throw new UserError("\u041D\u0435 \u0432\u0438\u0436\u0443 \u0444\u043E\u0442\u043E. \u041D\u0430\u0436\u043C\u0438\u0442\u0435 \u043A\u043D\u043E\u043F\u043A\u0443 \u0435\u0449\u0451 \u0440\u0430\u0437 \u0438 \u043F\u0440\u0438\u0448\u043B\u0438\u0442\u0435 \u043A\u0430\u0440\u0442\u0438\u043D\u043A\u0443 \u043E\u0442\u0432\u0435\u0442\u043E\u043C \u043D\u0430 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0435 \u0431\u043E\u0442\u0430.");
+  const fileId = doc ? doc.file_id : sizes.reduce((a, b) => b.width > a.width ? b : a).file_id;
+  const bytes = await tg.fileBytes(fileId);
+  if (bytes.length > 15 * 1024 * 1024) throw new UserError("\u0424\u043E\u0442\u043E \u0441\u043B\u0438\u0448\u043A\u043E\u043C \u0431\u043E\u043B\u044C\u0448\u043E\u0435 (\u0431\u043E\u043B\u044C\u0448\u0435 15 \u041C\u0411).");
+  return bytes;
+}
+var stamp = () => (/* @__PURE__ */ new Date()).toISOString().replace(/\D/g, "").slice(0, 14);
 async function applyAnswer(key, value, msg, from) {
   const [q, arg = ""] = key.split(":");
   return applyGeneric(q, arg, Number(arg), value, msg, from, ` (${who(from)})`);
@@ -495,30 +515,38 @@ async function applyGeneric(q, arg, n, value, msg, from, by) {
       });
       return [SAVED, back(`phi:${n}`)];
     case "phadd": {
-      const sizes = msg.photo;
-      const doc = msg.document && /^image\/(jpe?g)$/.test(msg.document.mime_type) ? msg.document : void 0;
-      if (!sizes?.length && !doc) throw new UserError("\u041D\u0435 \u0432\u0438\u0436\u0443 \u0444\u043E\u0442\u043E. \u041D\u0430\u0436\u043C\u0438\u0442\u0435 \xAB\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C \u0444\u043E\u0442\u043E\xBB \u0438 \u043F\u0440\u0438\u0448\u043B\u0438\u0442\u0435 \u043A\u0430\u0440\u0442\u0438\u043D\u043A\u0443 \u043E\u0442\u0432\u0435\u0442\u043E\u043C \u043D\u0430 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0435 \u0431\u043E\u0442\u0430.");
-      const fileId = doc ? doc.file_id : sizes.reduce((a, b) => b.width > a.width ? b : a).file_id;
-      const bytes = await tg.fileBytes(fileId);
-      if (bytes.length > 15 * 1024 * 1024) throw new UserError("\u0424\u043E\u0442\u043E \u0441\u043B\u0438\u0448\u043A\u043E\u043C \u0431\u043E\u043B\u044C\u0448\u043E\u0435 (\u0431\u043E\u043B\u044C\u0448\u0435 15 \u041C\u0411).");
+      const bytes = await photoFromMessage(msg);
       const tag = msg.caption ? text(msg.caption, 30) : "\u0440\u0430\u0431\u043E\u0442\u0430 \u043C\u0430\u0441\u0442\u0435\u0440\u0430";
-      const name = `lookbook/${(/* @__PURE__ */ new Date()).toISOString().replace(/\D/g, "").slice(0, 14)}.jpg`;
+      const name = `lookbook/${stamp()}.jpg`;
       await writeFile(env.siteRepo, `${PHOTOS_DIR}/${name}`, env.siteBranch, bytes, `\u0411\u043E\u0442: \u043D\u043E\u0432\u043E\u0435 \u0444\u043E\u0442\u043E \u0440\u0430\u0431\u043E\u0442\u044B${by}`);
       await save2("\u0444\u043E\u0442\u043E \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u043E \u043D\u0430 \u0441\u0430\u0439\u0442", (c) => {
         c.lookbook.unshift({ file: name, tag, alt: tag });
       });
       return [`\u0424\u043E\u0442\u043E \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u043E \u043F\u0435\u0440\u0432\u044B\u043C \u0432 \u043B\u0435\u043D\u0442\u0443 \xAB\u0420\u0430\u0431\u043E\u0442\u044B\xBB. ${SAVED}`, back("ph", "\u2190 \u041A \u0444\u043E\u0442\u043E")];
     }
+    case "bphoto": {
+      const bytes = await photoFromMessage(msg);
+      const name = `barbers/${stamp()}.jpg`;
+      await writeFile(env.siteRepo, `${PHOTOS_DIR}/${name}`, env.siteBranch, bytes, `\u0411\u043E\u0442: \u0444\u043E\u0442\u043E \u043C\u0430\u0441\u0442\u0435\u0440\u0430${by}`);
+      let old = "";
+      const c = await save2("\u0444\u043E\u0442\u043E \u043C\u0430\u0441\u0442\u0435\u0440\u0430 \u043D\u0430 \u0441\u0430\u0439\u0442\u0435", (x) => {
+        old = x.barbers[n].photo ?? "";
+        x.barbers[n].photo = name;
+      });
+      if (old.startsWith("barbers/")) await deleteFile(env.siteRepo, `${PHOTOS_DIR}/${old}`, env.siteBranch, `\u0411\u043E\u0442: \u0441\u0442\u0430\u0440\u043E\u0435 \u0444\u043E\u0442\u043E \u043C\u0430\u0441\u0442\u0435\u0440\u0430 \u0443\u0434\u0430\u043B\u0435\u043D\u043E${by}`).catch(() => {
+      });
+      return [`\u0424\u043E\u0442\u043E ${esc(c.barbers[n].name)} \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u043E. ${SAVED}`, back(`bi:${n}`, "\u2190 \u041A \u043C\u0430\u0441\u0442\u0435\u0440\u0443")];
+    }
     case "bname":
       await save2("\u0438\u043C\u044F \u043C\u0430\u0441\u0442\u0435\u0440\u0430", (c) => {
         c.barbers[n].name = text(value, 30);
       });
-      return [SAVED, back("br")];
+      return [SAVED, back(`bi:${n}`, "\u2190 \u041A \u043C\u0430\u0441\u0442\u0435\u0440\u0443")];
     case "brole":
       await save2("\u0441\u043F\u0435\u0446\u0438\u0430\u043B\u0438\u0437\u0430\u0446\u0438\u044F \u043C\u0430\u0441\u0442\u0435\u0440\u0430", (c) => {
         c.barbers[n].role = text(value, 60);
       });
-      return [SAVED, back("br")];
+      return [SAVED, back(`bi:${n}`, "\u2190 \u041A \u043C\u0430\u0441\u0442\u0435\u0440\u0443")];
     case "badd": {
       const [name, role] = nameAndRest(value);
       await save2(`\u043D\u043E\u0432\u044B\u0439 \u043C\u0430\u0441\u0442\u0435\u0440 ${name}`, (c) => {
@@ -627,12 +655,36 @@ async function onButton(data, chatId, messageId, from) {
     }
     case "br":
       return show(barbersMenu(await readContent()));
+    case "bi": {
+      const c = await readContent();
+      const b = c.barbers[n];
+      if (!b) return show(barbersMenu(c));
+      const caption = `<b>${esc(b.name)}</b>
+${esc(b.role)}${b.photo ? "" : "\n\n\u0424\u043E\u0442\u043E \u043F\u043E\u043A\u0430 \u043D\u0435\u0442 \u2014 \u043D\u0430 \u0441\u0430\u0439\u0442\u0435 \u0437\u0430\u0433\u043B\u0443\u0448\u043A\u0430."}`;
+      return b.photo ? tg.photo(chatId, photoUrl(b.photo), caption, barberKb(c, n)) : show([caption, barberKb(c, n)]);
+    }
+    case "bpx": {
+      let old = "";
+      const c = await saveContent(`\u0411\u043E\u0442: \u0444\u043E\u0442\u043E \u043C\u0430\u0441\u0442\u0435\u0440\u0430 \u0443\u0431\u0440\u0430\u043D\u043E${by}`, (x) => {
+        old = x.barbers[n].photo ?? "";
+        delete x.barbers[n].photo;
+      });
+      if (old.startsWith("barbers/")) await deleteFile(env.siteRepo, `${PHOTOS_DIR}/${old}`, env.siteBranch, `\u0411\u043E\u0442: \u0443\u0434\u0430\u043B\u0451\u043D \u0444\u0430\u0439\u043B \u0444\u043E\u0442\u043E \u043C\u0430\u0441\u0442\u0435\u0440\u0430${by}`).catch(() => {
+      });
+      return tg.send(chatId, `\u0424\u043E\u0442\u043E \u0443\u0431\u0440\u0430\u043D\u043E, \u043D\u0430 \u0441\u0430\u0439\u0442\u0435 \u0441\u043D\u043E\u0432\u0430 \u0437\u0430\u0433\u043B\u0443\u0448\u043A\u0430. ${SAVED}`, barberKb(c, n));
+    }
     case "bdel":
-      return show([`\u0423\u0431\u0440\u0430\u0442\u044C \u043C\u0430\u0441\u0442\u0435\u0440\u0430 \xAB${esc((await readContent()).barbers[n]?.name)}\xBB \u0441 \u0441\u0430\u0439\u0442\u0430?`, [[{ text: "\u{1F5D1} \u0414\u0430", data: `bdy:${n}` }, { text: "\u041E\u0442\u043C\u0435\u043D\u0430", data: "br" }]]]);
-    case "bdy":
-      return show(barbersMenu(await saveContent(`\u0411\u043E\u0442: \u043C\u0430\u0441\u0442\u0435\u0440 \u0443\u0431\u0440\u0430\u043D${by}`, (c) => {
-        c.barbers.splice(n, 1);
-      })));
+      return tg.send(chatId, `\u0423\u0431\u0440\u0430\u0442\u044C \u043C\u0430\u0441\u0442\u0435\u0440\u0430 \xAB${esc((await readContent()).barbers[n]?.name)}\xBB \u0441 \u0441\u0430\u0439\u0442\u0430?`, [[{ text: "\u{1F5D1} \u0414\u0430", data: `bdy:${n}` }, { text: "\u041E\u0442\u043C\u0435\u043D\u0430", data: `bi:${n}` }]]);
+    case "bdy": {
+      let old = "";
+      const c = await saveContent(`\u0411\u043E\u0442: \u043C\u0430\u0441\u0442\u0435\u0440 \u0443\u0431\u0440\u0430\u043D${by}`, (x) => {
+        old = x.barbers[n]?.photo ?? "";
+        x.barbers.splice(n, 1);
+      });
+      if (old.startsWith("barbers/")) await deleteFile(env.siteRepo, `${PHOTOS_DIR}/${old}`, env.siteBranch, `\u0411\u043E\u0442: \u0443\u0434\u0430\u043B\u0451\u043D \u0444\u0430\u0439\u043B \u0444\u043E\u0442\u043E \u043C\u0430\u0441\u0442\u0435\u0440\u0430${by}`).catch(() => {
+      });
+      return tg.send(chatId, `\u041C\u0430\u0441\u0442\u0435\u0440 \u0443\u0431\u0440\u0430\u043D. ${SAVED}`, barbersMenu(c)[1]);
+    }
     case "rt":
       return show(ratingMenu(await readContent()));
     case "ad":

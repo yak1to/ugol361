@@ -106,14 +106,22 @@ const photoKb = (n: number, total: number): Kb => [
 
 function barbersMenu(c: Content): [string, Kb] {
   return [
-    `<b>Мастера на сайте</b>\n${c.barbers.map((b, n) => `${n + 1}. ${esc(b.name)} — ${esc(b.role)}`).join('\n')}`,
+    `<b>Мастера на сайте</b>\n${c.barbers.map((b, n) => `${n + 1}. ${esc(b.name)} — ${esc(b.role)}${b.photo ? ' 📷' : ' (без фото)'}`).join('\n')}\n\nНажмите на мастера, чтобы изменить имя, специализацию или фото.`,
     [
-      ...c.barbers.map((b, n) => [{ text: `✏️ ${b.name}`, data: `q:bname:${n}` }, { text: 'Чем занимается', data: `q:brole:${n}` }, { text: '🗑', data: `bdel:${n}` }]),
+      ...chunk(c.barbers.map((b, n) => ({ text: `${b.photo ? '📷 ' : ''}${b.name}`, data: `bi:${n}` })), 2),
       [{ text: '➕ Добавить мастера', data: 'q:badd' }],
       [{ text: '← Меню', data: 'm' }],
     ],
   ];
 }
+
+const barberKb = (c: Content, n: number): Kb => [
+  [{ text: '✏️ Имя', data: `q:bname:${n}` }, { text: '✏️ Чем занимается', data: `q:brole:${n}` }],
+  [{ text: c.barbers[n].photo ? '📷 Заменить фото' : '📷 Добавить фото', data: `q:bphoto:${n}` }],
+  ...(c.barbers[n].photo ? [[{ text: '✖️ Убрать фото', data: `bpx:${n}` }]] : []),
+  [{ text: '🗑 Убрать мастера с сайта', data: `bdel:${n}` }],
+  [{ text: '← К мастерам', data: 'br' }],
+];
 
 const ratingMenu = (c: Content): [string, Kb] => [
   `<b>Рейтинг на сайте</b>\n${c.rating.value.toFixed(1)} · ${c.rating.votes} оценок · ${c.rating.reviews} отзывов\n(перепишите цифры из карточки на Яндекс Картах)`,
@@ -157,6 +165,7 @@ const QUESTIONS: Record<string, (c: Content, arg: string) => [string, string?]> 
   bname: (c, a) => [`Имя мастера вместо «${esc(c.barbers[+a]?.name)}»:`],
   brole: (c, a) => [`Чем занимается ${esc(c.barbers[+a]?.name)}:`, 'Стрижки, борода'],
   badd: () => ['Новый мастер в формате <b>Имя — чем занимается</b>:', 'Коля — стрижки, фейды'],
+  bphoto: (c, a) => [`Пришлите <b>фото ${esc(c.barbers[+a]?.name)} ответом на это сообщение</b>. Лучше вертикальное, лицо по центру.`, 'Фото мастера'],
   rv: () => ['Оценка на Яндекс Картах, например 4.9:', '5.0'],
   rvo: () => ['Сколько оценок:', '134'],
   rre: () => ['Сколько отзывов:', '117'],
@@ -186,6 +195,18 @@ const nameAndRest = (s: string) => {
   if (m.length < 2) throw new UserError('Нужен формат «Название — значение», через тире.');
   return [text(m[0], 60), m.slice(1).join(' — ')] as const;
 };
+
+/** Фото из ответа → JPEG-байты из Telegram (берём самый крупный размер). */
+async function photoFromMessage(msg: any) {
+  const sizes = msg.photo as { file_id: string; width: number }[] | undefined;
+  const doc = msg.document && /^image\/(jpe?g)$/.test(msg.document.mime_type) ? msg.document : undefined;
+  if (!sizes?.length && !doc) throw new UserError('Не вижу фото. Нажмите кнопку ещё раз и пришлите картинку ответом на сообщение бота.');
+  const fileId = doc ? doc.file_id : sizes!.reduce((a, b) => (b.width > a.width ? b : a)).file_id;
+  const bytes = await tg.fileBytes(fileId);
+  if (bytes.length > 15 * 1024 * 1024) throw new UserError('Фото слишком большое (больше 15 МБ).');
+  return bytes;
+}
+const stamp = () => new Date().toISOString().replace(/\D/g, '').slice(0, 14);
 
 async function applyAnswer(key: string, value: string, msg: any, from: From): Promise<[string, Kb?]> {
   const [q, arg = ''] = key.split(':');
@@ -231,20 +252,24 @@ async function applyGeneric(q: string, arg: string, n: number, value: string, ms
     case 'soc': await save(`ссылка ${SOCIALS[arg] ?? arg}`, (c) => { c.socials[arg] = value.trim() === '-' ? '' : link(value); }); return [SAVED, back('c')];
     case 'phtag': await save('подпись фото', (c) => { c.lookbook[n].tag = text(value, 30); c.lookbook[n].alt = text(value, 30); }); return [SAVED, back(`phi:${n}`)];
     case 'phadd': {
-      const sizes = msg.photo as { file_id: string; width: number }[] | undefined;
-      const doc = msg.document && /^image\/(jpe?g)$/.test(msg.document.mime_type) ? msg.document : undefined;
-      if (!sizes?.length && !doc) throw new UserError('Не вижу фото. Нажмите «Добавить фото» и пришлите картинку ответом на сообщение бота.');
-      const fileId = doc ? doc.file_id : sizes!.reduce((a, b) => (b.width > a.width ? b : a)).file_id;
-      const bytes = await tg.fileBytes(fileId);
-      if (bytes.length > 15 * 1024 * 1024) throw new UserError('Фото слишком большое (больше 15 МБ).');
+      const bytes = await photoFromMessage(msg);
       const tag = msg.caption ? text(msg.caption, 30) : 'работа мастера';
-      const name = `lookbook/${new Date().toISOString().replace(/\D/g, '').slice(0, 14)}.jpg`;
+      const name = `lookbook/${stamp()}.jpg`;
       await writeFile(env.siteRepo, `${PHOTOS_DIR}/${name}`, env.siteBranch, bytes, `Бот: новое фото работы${by}`);
       await save('фото добавлено на сайт', (c) => { c.lookbook.unshift({ file: name, tag, alt: tag }); });
       return [`Фото добавлено первым в ленту «Работы». ${SAVED}`, back('ph', '← К фото')];
     }
-    case 'bname': await save('имя мастера', (c) => { c.barbers[n].name = text(value, 30); }); return [SAVED, back('br')];
-    case 'brole': await save('специализация мастера', (c) => { c.barbers[n].role = text(value, 60); }); return [SAVED, back('br')];
+    case 'bphoto': {
+      const bytes = await photoFromMessage(msg);
+      const name = `barbers/${stamp()}.jpg`;
+      await writeFile(env.siteRepo, `${PHOTOS_DIR}/${name}`, env.siteBranch, bytes, `Бот: фото мастера${by}`);
+      let old = '';
+      const c = await save('фото мастера на сайте', (x) => { old = x.barbers[n].photo ?? ''; x.barbers[n].photo = name; });
+      if (old.startsWith('barbers/')) await deleteFile(env.siteRepo, `${PHOTOS_DIR}/${old}`, env.siteBranch, `Бот: старое фото мастера удалено${by}`).catch(() => {});
+      return [`Фото ${esc(c.barbers[n].name)} обновлено. ${SAVED}`, back(`bi:${n}`, '← К мастеру')];
+    }
+    case 'bname': await save('имя мастера', (c) => { c.barbers[n].name = text(value, 30); }); return [SAVED, back(`bi:${n}`, '← К мастеру')];
+    case 'brole': await save('специализация мастера', (c) => { c.barbers[n].role = text(value, 60); }); return [SAVED, back(`bi:${n}`, '← К мастеру')];
     case 'badd': {
       const [name, role] = nameAndRest(value);
       await save(`новый мастер ${name}`, (c) => { c.barbers.push({ name: text(name, 30), role: text(role, 60) }); });
@@ -320,8 +345,26 @@ async function onButton(data: string, chatId: number, messageId: number, from: F
       return show([`Фото убрано. ${SAVED}`, photosMenu(c)[1]]);
     }
     case 'br': return show(barbersMenu(await readContent()));
-    case 'bdel': return show([`Убрать мастера «${esc((await readContent()).barbers[n]?.name)}» с сайта?`, [[{ text: '🗑 Да', data: `bdy:${n}` }, { text: 'Отмена', data: 'br' }]]]);
-    case 'bdy': return show(barbersMenu(await saveContent(`Бот: мастер убран${by}`, (c) => { c.barbers.splice(n, 1); })));
+    case 'bi': {
+      const c = await readContent();
+      const b = c.barbers[n];
+      if (!b) return show(barbersMenu(c));
+      const caption = `<b>${esc(b.name)}</b>\n${esc(b.role)}${b.photo ? '' : '\n\nФото пока нет — на сайте заглушка.'}`;
+      return b.photo ? tg.photo(chatId, photoUrl(b.photo), caption, barberKb(c, n)) : show([caption, barberKb(c, n)]);
+    }
+    case 'bpx': {
+      let old = '';
+      const c = await saveContent(`Бот: фото мастера убрано${by}`, (x) => { old = x.barbers[n].photo ?? ''; delete x.barbers[n].photo; });
+      if (old.startsWith('barbers/')) await deleteFile(env.siteRepo, `${PHOTOS_DIR}/${old}`, env.siteBranch, `Бот: удалён файл фото мастера${by}`).catch(() => {});
+      return tg.send(chatId, `Фото убрано, на сайте снова заглушка. ${SAVED}`, barberKb(c, n));
+    }
+    case 'bdel': return tg.send(chatId, `Убрать мастера «${esc((await readContent()).barbers[n]?.name)}» с сайта?`, [[{ text: '🗑 Да', data: `bdy:${n}` }, { text: 'Отмена', data: `bi:${n}` }]]);
+    case 'bdy': {
+      let old = '';
+      const c = await saveContent(`Бот: мастер убран${by}`, (x) => { old = x.barbers[n]?.photo ?? ''; x.barbers.splice(n, 1); });
+      if (old.startsWith('barbers/')) await deleteFile(env.siteRepo, `${PHOTOS_DIR}/${old}`, env.siteBranch, `Бот: удалён файл фото мастера${by}`).catch(() => {});
+      return tg.send(chatId, `Мастер убран. ${SAVED}`, barbersMenu(c)[1]);
+    }
     case 'rt': return show(ratingMenu(await readContent()));
     case 'ad': return show(await adminsMenu());
     case 'addel': {

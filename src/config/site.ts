@@ -11,6 +11,7 @@ const SOCIAL_LABELS: Record<string, string> = {
 };
 
 type PriceItem = { name: string; price: number; firstVisit?: number };
+type Barber = { name: string; role: string; photo?: string };
 
 export const site = {
   name: 'Угол 361',
@@ -72,7 +73,7 @@ export const site = {
   // Фото работ. Присланные через бота лежат в src/assets/photos/lookbook/
   lookbook: data.lookbook,
 
-  barbers: data.barbers,
+  barbers: data.barbers as Barber[],
 
   // Только темы из отзывов на Яндексе, без выдуманных цитат
   reviewTopics: [

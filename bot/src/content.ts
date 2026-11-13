@@ -14,7 +14,7 @@ export type Content = {
   socials: Record<string, string>;
   prices: { date: string; items: PriceItem[]; promo: { name: string; price: number; oldPrice: number; note: string } };
   lookbook: { file: string; tag: string; alt: string }[];
-  barbers: { name: string; role: string }[];
+  barbers: { name: string; role: string; photo?: string }[];
 };
 
 export const readContent = async () =>
