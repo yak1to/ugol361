@@ -1,0 +1,7 @@
+{
+  "name": "ugol361-bot",
+  "private": true,
+  "type": "module",
+  "description": "Telegram-бот для управления сайтом «Угол 361»: цены, контакты, фото работ, запись, доступ",
+  "engines": { "node": "24.x" }
+}

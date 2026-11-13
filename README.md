@@ -22,11 +22,31 @@ npm run preview   # проверить сборку
 
 Страницы: `/` — сайт, `/prices` — цены, `/pitch` — экран для владельца (noindex), `/styleguide` — токены и компоненты (noindex).
 
+## Админка: Telegram-бот @ugol361_bot
+
+Владелец меняет сайт из Telegram: цены и акцию, ссылку «Записаться», телефон, адрес, часы, соцсети,
+фото работ (прислать фото → оно появится первым в ленте), мастеров, рейтинг и список тех, у кого есть доступ.
+
+Как это устроено:
+1. Бот — функция на Vercel (`bot/`, проект `ugol361-bot`), Telegram присылает ей сообщения вебхуком.
+2. Изменения бот коммитит в `src/content/site.json` (фото — в `src/assets/photos/lookbook/`).
+3. GitHub Actions (`.github/workflows/pages.yml`) пересобирает сайт, через 1–2 минуты он обновлён.
+4. Список доступа — в приватном репозитории `yak1to/ugol361-admin` (`admins.json`). Владелец задан переменной `OWNER`.
+   Добавить можно по @нику или числовому ID; при первом входе бот запоминает ID человека.
+
+Переменные окружения бота (Vercel → ugol361-bot): `BOT_TOKEN`, `GH_TOKEN` (fine-grained токен GitHub:
+Contents read/write на оба репозитория), `WEBHOOK_SECRET`, `OWNER`, `SITE_URL`, `SITE_REPO`, `ADMIN_REPO`.
+
+Обновить бота: `cd bot && node build.mjs && npx vercel deploy --prod`.
+Сменить токен бота: `npx vercel env add BOT_TOKEN production --force` в `bot/`, передеплоить и заново вызвать `setWebhook`.
+
 ## Как перекрасить под другой салон
 
 Компоненты не трогаем. Меняются только файлы ниже.
 
-### 1. `src/config/site.ts` — всё содержимое
+### 1. `src/content/site.json` + `src/config/site.ts` — содержимое
+В `site.json` то, что меняет владелец (цены, контакты, часы, фото, ссылка записи, мастера), в `site.ts` — тексты и оформление.
+
 | Поле | Что это |
 |---|---|
 | `name`, `nameLatin`, `kind` | Название и тип заведения |
