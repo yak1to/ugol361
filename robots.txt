@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /styleguide
+Disallow: /pitch
+Disallow: /ugol361/styleguide
+Disallow: /ugol361/pitch
