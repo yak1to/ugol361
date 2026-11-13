@@ -12,7 +12,7 @@ export function barbershopJsonLd(origin: URL) {
     alternateName: site.nameLatin,
     description: `${site.kind} у метро ${site.address.metro}`,
     url: new URL(url(), origin).href,
-    image: new URL(url('og.png'), origin).href,
+    image: new URL(url('og.png?v=2'), origin).href,
     telephone: site.phone.href.replace('tel:', ''),
     priceRange: `${Math.min(...all)}–${Math.max(...all)} ₽`,
     currenciesAccepted: 'RUB',
