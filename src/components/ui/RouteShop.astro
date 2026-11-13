@@ -1,0 +1,107 @@
+---
+// Иллюстрация входа по их фото: вывеска «Топ цветы», деревянные рейки, каменные колонны,
+// красная рама, стеклянные створки, столб, сливовый флаг. Обводка «от руки», как у стикеров.
+// Координаты в системе десктопной схемы (x 700–970, y 40–318); на мобиле — через transform.
+import logoRaw from '../../assets/svg/logo.svg?raw';
+interface Props { id: string; transform?: string }
+const { id, transform } = Astro.props;
+const INK = 'var(--ink)';
+// внутренности логотипа (буквы + круг с 361) для вставки на стекло
+const logoInner = logoRaw.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '').replace(/<!--[\s\S]*?-->/g, '').replace(/<title>.*?<\/title>/, '');
+// рейки: чередуем тёплые тона дерева
+const planks = Array.from({ length: 13 }, (_, i) => ({ y: 110 + i * 16, fill: ['#A9683F', '#955A38', '#B37347'][i % 3] }));
+// камни колонн: ряды разной ширины
+const stones = (x: number, w: number) =>
+  Array.from({ length: 12 }, (_, i) => {
+    const y = 150 + i * 14;
+    const split = [0.55, 0.38, 0.62, 0.45][i % 4] * w;
+    const tones = ['#C9C1B2', '#A99F8E', '#B9B0A0', '#D4CDBF'];
+    return [
+      { x, y, w: split, fill: tones[i % 4] },
+      { x: x + split, y, w: w - split, fill: tones[(i + 2) % 4] },
+    ];
+  }).flat();
+---
+<defs>
+  <filter id={`${id}-wob`} x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="2" seed="7" />
+    <feDisplacementMap in="SourceGraphic" scale="2.6" xChannelSelector="R" yChannelSelector="G" />
+  </filter>
+  <clipPath id={`${id}-glass`}><rect x="905" y="196" width="18" height="70" rx="9" /></clipPath>
+  <clipPath id={`${id}-leafs`}><rect x="776" y="158" width="108" height="158" /></clipPath>
+  <pattern id={`${id}-stripes`} width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(-32)">
+    <rect width="18" height="6" fill="var(--door-red)" />
+    <rect y="6" width="18" height="3" fill="var(--paper)" />
+    <rect y="9" width="18" height="6" fill="var(--pole-blue)" />
+    <rect y="15" width="18" height="3" fill="var(--paper)" />
+  </pattern>
+</defs>
+<g class="route__shop" transform={transform}>
+  <g filter={`url(#${id}-wob)`} stroke={INK} stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+    <!-- стена за рейками и сами рейки -->
+    <rect x="704" y="104" width="262" height="214" fill="#2A211C" />
+    {planks.map((p) => <rect x="700" y={p.y} width="270" height="11" fill={p.fill} stroke-width="1.5" />)}
+
+    <!-- вывеска цветочного -->
+    <rect x="700" y="40" width="270" height="64" fill={INK} />
+    <path d="M706 46 H964" stroke="#4a4a46" stroke-width="2" />
+
+    <!-- каменные колонны -->
+    {[...stones(732, 32), ...stones(898, 32)].map((s) => <rect x={s.x} y={s.y} width={s.w} height="14" fill={s.fill} stroke-width="1.2" />)}
+    <rect x="732" y="150" width="32" height="168" fill="none" />
+    <rect x="898" y="150" width="32" height="168" fill="none" />
+
+    <!-- красная рама и створки -->
+    <rect x="764" y="146" width="132" height="172" fill="var(--door-red)" />
+    <rect x="776" y="158" width="108" height="160" fill="#262623" />
+    <path d="M830 158 V318" stroke-width="4" />
+    <rect x="776" y="158" width="108" height="160" fill="none" />
+    <!-- ручки -->
+    <path d="M823 212 V268 M837 212 V268" stroke="#D8D8D2" stroke-width="4" />
+
+    <!-- флаг у входа -->
+    <path d="M950 318 V150" stroke="#D8D8D2" stroke-width="3" />
+    <path d="M938 152 Q972 146 968 196 L962 288 Q954 304 940 284 Z" fill="var(--plum)" />
+    <rect x="934" y="308" width="32" height="10" rx="5" fill="var(--paper)" stroke-width="2" />
+  </g>
+
+  <!-- надписи без искажения, чтобы читались -->
+  <text x="835" y="80" text-anchor="middle" font-family="var(--font-display)" font-weight="700" font-size="32" letter-spacing="1"><tspan fill="var(--door-red)">ТОП</tspan><tspan fill="#2BA24C">ЦВЕТЫ</tspan></text>
+  <text x="835" y="96" text-anchor="middle" font-family="var(--font-display)" font-weight="600" font-size="10" letter-spacing="2.4" fill="var(--paper)">СЕТЬ ЦВЕТОЧНЫХ БАЗ</text>
+  <!-- их логотип на левой створке -->
+  <svg x="780" y="215" width="37" height="16.9" viewBox="0 0 870 397" color="var(--paper)" opacity=".94" set:html={logoInner} />
+  <text x="798.5" y="242" text-anchor="middle" font-family="var(--font-body)" font-weight="500" font-size="7" fill="var(--paper)" opacity=".85">Барбершоп</text>
+
+  <!-- флаг: У Г (361) Л + «барбершоп» -->
+  <g font-family="var(--font-display)" font-weight="600" font-size="11" fill="var(--paper)" text-anchor="middle">
+    <text x="953" y="176">У</text><text x="953" y="193">Г</text><text x="953" y="236">Л</text>
+    <text x="952" y="262" font-size="4.1" letter-spacing=".2">БАРБЕРШОП</text>
+  </g>
+  <circle cx="953" cy="209" r="8.5" fill="none" stroke="var(--paper)" stroke-width="1.6" />
+  <text x="953" y="211.6" text-anchor="middle" font-family="var(--font-numeral)" font-style="italic" font-weight="700" font-size="7.4" fill="var(--paper)">361</text>
+
+  <!-- барберский столб стоит внутри, за правой створкой -->
+  <g class="route__pole" transform="translate(-47 -2)">
+    <rect x="901" y="186" width="26" height="12" rx="4" fill="#55554F" />
+    <rect x="905" y="196" width="18" height="70" rx="9" fill="var(--paper)" />
+    <g clip-path={`url(#${id}-glass)`}>
+      <rect class="route__pole-spin" x="895" y="160" width="40" height="140" fill={`url(#${id}-stripes)`} />
+      <rect x="905" y="196" width="6" height="70" fill="#fff" opacity=".35" />
+    </g>
+    <rect x="905" y="196" width="18" height="70" rx="9" fill="none" stroke={INK} stroke-width="2.5" />
+    <rect x="901" y="264" width="26" height="12" rx="4" fill="#55554F" />
+  </g>
+  <!-- стекло поверх столба: лёгкое затемнение и блики -->
+  <g clip-path={`url(#${id}-leafs)`}>
+    <rect x="832" y="160" width="50" height="156" fill="#1c1c1a" opacity=".28" />
+    <path d="M776 250 L832 158 H852 L776 284 Z" fill="#fff" opacity=".1" />
+    <path d="M838 318 L884 232 V268 L858 318 Z" fill="#fff" opacity=".12" />
+    <rect x="776" y="296" width="108" height="22" fill="#000" opacity=".22" />
+  </g>
+</g>
+<style>
+  .route__pole-spin { animation: pole-spin 1.1s linear infinite; }
+  /* период полос по вертикали: 18 / cos(32°) */
+  @keyframes pole-spin { to { transform: translateY(21.23px); } }
+  @media (prefers-reduced-motion: reduce) { .route__pole-spin { animation: none; } }
+</style>

@@ -1,0 +1,30 @@
+---
+import { rub } from '../../config/site';
+interface Props { name: string; price: number; oldPrice: number; note?: string; class?: string }
+const { name, price, oldPrice, note, class: cls = '' } = Astro.props;
+---
+<div class={`promo ${cls}`}>
+  <span class="promo__tag">акция</span>
+  <p class="promo__name">{name}</p>
+  <p class="promo__old"><s>{rub(oldPrice)}</s></p>
+  <p class="promo__price">{rub(price)}</p>
+  {note && <p class="promo__note caption">{note}</p>}
+</div>
+<style>
+  .promo {
+    --tilt: -4deg;
+    display: inline-block; width: min(300px, 80vw); padding: 18px 20px 16px;
+    background: var(--paper); color: var(--ink); transform: rotate(var(--tilt));
+    border: 3px solid var(--ink); box-shadow: 6px 7px 0 var(--door-red);
+    font-family: var(--font-display); text-transform: uppercase;
+  }
+  .promo p { margin: 0; }
+  .promo__tag { display: inline-block; background: var(--ink); color: var(--paper); font-weight: 600; font-size: 14px; padding: 3px 8px 2px; letter-spacing: .04em; }
+  .promo__name { font-weight: 700; font-size: 34px; line-height: .95; margin-top: 10px !important; }
+  .promo__old { font-size: 22px; font-weight: 500; color: var(--brick-dark); margin-top: 8px !important; }
+  /* зачёркивание как маркером в их промо */
+  .promo__old s { text-decoration: none; position: relative; }
+  .promo__old s::after { content: ''; position: absolute; left: -4px; right: -4px; top: 52%; height: 4px; background: var(--door-red); transform: rotate(-6deg); }
+  .promo__price { font-weight: 700; font-size: 64px; line-height: .9; color: var(--door-red); font-variant-numeric: tabular-nums; }
+  .promo__note { text-transform: none; font-family: var(--font-body); margin-top: 6px !important; }
+</style>

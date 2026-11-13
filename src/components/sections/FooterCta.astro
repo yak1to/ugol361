@@ -1,0 +1,33 @@
+---
+import { getImage } from 'astro:assets';
+import ornamentSrc from '../../assets/photos/ornament-tile.jpg';
+const ornament = await getImage({ src: ornamentSrc, format: 'webp', width: 1600, quality: 62 });
+import { site } from '../../config/site';
+---
+<footer class="facade fcta" style={`--ornament:url(${ornament.src})`}>
+  <div class="fcta__ornament" aria-hidden="true"></div>
+  <p class="fcta__deg numeral" aria-hidden="true">{site.footer.title.replace('°', '')}<span class="fcta__o">°</span></p>
+  <div class="fcta__body">
+    <p class="fcta__line">{site.footer.line}</p>
+    <a class="btn btn--huge" href={site.booking.href} target="_blank" rel="noopener" data-magnetic>{site.booking.label}</a>
+    <ul class="fcta__links">
+      {site.socials.map((s) => <li><a class="link-under" href={s.href} target="_blank" rel="noopener">{s.label}</a></li>)}
+      <li><a class="link-under" href={site.phone.href}>{site.phone.display}</a></li>
+    </ul>
+  </div>
+  <div class="fcta__legal caption">
+    <span>{site.name}, {site.address.city}, {site.address.street}</span>
+    <span>Логотип и фото временные, для демо</span>
+  </div>
+</footer>
+
+<style>
+  .fcta { padding: clamp(80px, 10vw, 160px) var(--gutter) 28px; overflow: hidden; display: grid; gap: 48px; }
+  .fcta__ornament { position: absolute; inset: 0; z-index: -2; background: var(--ornament) 0 0 / 1100px auto repeat; opacity: .4; }
+  .fcta__deg { margin: 0; font-size: clamp(150px, 32vw, 560px); line-height: .75; color: var(--window-hot); letter-spacing: -.04em; margin-left: -.05em; }
+  .fcta__o { font-size: .42em; vertical-align: .9em; margin-left: .04em; font-style: normal; }
+  .fcta__body { display: grid; justify-items: start; gap: 28px; margin-left: auto; width: min(100%, 720px); }
+  .fcta__line { font-size: var(--fs-lead); line-height: 1.12; margin: 0; max-width: 24ch; }
+  .fcta__links { list-style: none; padding: 0; margin: 0; display: flex; gap: 12px 28px; flex-wrap: wrap; }
+  .fcta__legal { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; opacity: .7; margin-top: 48px; }
+</style>

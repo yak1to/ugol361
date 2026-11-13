@@ -1,0 +1,57 @@
+---
+import { site } from '../../config/site';
+const r = site.rating;
+---
+<section class="reviews" aria-labelledby="reviews-title">
+  <div class="reviews__score">
+    <h2 id="reviews-title" class="visually-hidden">Отзывы</h2>
+    <p class="reviews__num numeral" data-count-to={r.value}>{r.value.toFixed(1)}</p>
+    <p class="reviews__votes">
+      {r.votes} оценки и {r.reviews} отзывов<br />на Яндекс Картах.
+      <a class="link-under" href={r.url} target="_blank" rel="noopener">Почитать все</a>
+    </p>
+  </div>
+  <div class="reviews__topics">
+    <p class="caption reviews__topics-title">Чаще всего пишут, что</p>
+    <ul>{site.reviewTopics.map((t) => <li>{t}</li>)}</ul>
+  </div>
+  <ul class="reviews__list">
+    {site.reviews.map((rv, i) => (
+      <li class={`bubble b${i}`}>
+        <blockquote>{rv.text}</blockquote>
+        <p class="bubble__by"><span>{rv.author}</span><span>{rv.date}, Яндекс Карты</span></p>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .reviews {
+    background: var(--ink); color: var(--paper);
+    padding: clamp(96px, 12vw, 200px) var(--gutter);
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(40px, 6vw, 96px) 6vw;
+  }
+  .reviews__num { font-size: clamp(160px, 30vw, 520px); line-height: .78; margin: 0; color: var(--window-hot); letter-spacing: -.03em; }
+  .reviews__votes { font-size: var(--fs-lead); line-height: 1.15; margin: clamp(48px, 6vw, 80px) 0 0; max-width: 22ch; position: relative; }
+  .reviews__votes a { font-size: var(--fs-body); display: table; margin-top: 14px; }
+  .reviews__topics { align-self: end; }
+  .reviews__topics ul { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 6px; }
+  .reviews__topics li { font: 600 clamp(22px, 2.4vw, 38px)/1.05 var(--font-display); text-transform: uppercase; }
+  .reviews__topics li::before { content: '+ '; color: var(--window); }
+
+  .reviews__list { grid-column: 1 / -1; list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(12, 1fr); gap: 32px; }
+  /* речевые пузыри как наклейка «Угол» на их стене */
+  .bubble { position: relative; background: var(--paper); color: var(--ink); padding: 28px 28px 22px; border: 3px solid var(--door-red); }
+  .bubble::after { content: ''; position: absolute; left: 36px; bottom: -22px; width: 28px; height: 22px; background: var(--paper); border: 3px solid var(--door-red); border-top: 0; clip-path: polygon(0 0, 100% 0, 0 100%); }
+  .bubble blockquote { margin: 0 0 16px; font-size: clamp(18px, 1.5vw, 22px); line-height: 1.35; }
+  .bubble__by { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 14px; color: #5C5B52; }
+  .bubble__by span:first-child { font-weight: 600; color: var(--ink); }
+  .b0 { grid-column: 1 / span 5; transform: rotate(-1.5deg); }
+  .b1 { grid-column: 7 / span 5; margin-top: 64px; transform: rotate(1.2deg); }
+  .b2 { grid-column: 3 / span 5; transform: rotate(-.6deg); }
+  @media (max-width: 760px) {
+    .reviews { grid-template-columns: 1fr; }
+    .reviews__list { grid-template-columns: 1fr; }
+    .b0, .b1, .b2 { grid-column: 1; margin-top: 0; }
+  }
+</style>

@@ -1,0 +1,89 @@
+---
+import { site } from '../../config/site';
+import RouteShop from '../ui/RouteShop.astro';
+const a = site.address;
+const ROUTE = 'M150 270 C 260 300, 320 165, 450 182 S 580 288, 686 294';
+// мобильная схема: вертикально, вывеска внизу справа (та же графика, масштаб .66)
+const ROUTE_M = 'M70 105 C 60 200, 300 190, 270 270 S 50 340, 70 430 S 100 538, 156 538';
+// Логотип Московского метро: Wikimedia Commons «Moscow_Metro.svg», public domain
+const METRO_M = '453.9,306.2 424.7,232.3 400,275.5 375.4,232.3 346.1,306.2 337.5,306.2 337.5,317.4 381.7,317.4 381.7,306.2 375.1,306.2 381.5,287.8 400,318.2 418.5,287.8 424.9,306.2 418.3,306.2 418.3,317.4 462.5,317.4 462.5,306.2';
+---
+<section class="inside bricks find" id="find" aria-labelledby="find-title">
+  <div class="find__head">
+    <h2 id="find-title" class="display find__title">Как найти</h2>
+    <address class="find__addr">
+      <span class="find__street">{a.street}</span>
+      <span>м. {a.metro}, {a.metroDistance}. Вход через цветочный.</span>
+      <span>{site.hours.label}</span>
+      <a class="link-under" href={site.phone.href}>{site.phone.display}</a>
+    </address>
+  </div>
+
+  <!-- Схема: точка-«свет» идёт от метро к двери и оставляет за собой пунктир -->
+  <figure class="route">
+    <svg class="route__svg route__svg--desk" data-route-svg viewBox="0 0 1000 340" role="img" aria-labelledby="route-desc">
+      <desc id="route-desc">Схема: от метро Профсоюзная 200 метров пешком до вывески «Топ цветы», под ней красная дверь барбершопа.</desc>
+      <svg class="route__metro" x="22" y="226" width="110" height="76" viewBox="337.5 232.3 125 85.9" aria-hidden="true">
+        <polygon fill="#FF0013" points={METRO_M} />
+      </svg>
+      <path class="route__path" d={ROUTE} fill="none" stroke="var(--ink)" stroke-width="7" stroke-linecap="round" stroke-dasharray="1 18" />
+      <text x="378" y="146" font-family="var(--font-numeral)" font-style="italic" font-weight="700" font-size="40" fill="var(--ink)">200 м</text>
+      <RouteShop id="rd" />
+      <circle class="route__walker" data-route-walker cx="150" cy="270" r="11" fill="var(--window-hot)" stroke="var(--ink)" stroke-width="3" opacity="0" />
+      <path d="M0 318 H1000" stroke="var(--ink)" stroke-width="3" />
+    </svg>
+    <svg class="route__svg route__svg--mob" data-route-svg viewBox="0 0 360 580" role="img" aria-label="Схема: от метро Профсоюзная 200 метров пешком до вывески «Топ цветы», под ней красная дверь барбершопа.">
+      <svg x="18" y="22" width="96" height="66" viewBox="337.5 232.3 125 85.9" aria-hidden="true">
+        <polygon fill="#FF0013" points={METRO_M} />
+      </svg>
+      <path class="route__path" d={ROUTE_M} fill="none" stroke="var(--ink)" stroke-width="6" stroke-linecap="round" stroke-dasharray="1 16" />
+      <text x="196" y="118" font-family="var(--font-numeral)" font-style="italic" font-weight="700" font-size="34" fill="var(--ink)">200 м</text>
+      <RouteShop id="rm" transform="translate(-292 343.6) scale(.66)" />
+      <circle class="route__walker" data-route-walker cx="70" cy="105" r="10" fill="var(--window-hot)" stroke="var(--ink)" stroke-width="3" opacity="0" />
+      <path d="M0 554 H360" stroke="var(--ink)" stroke-width="3" />
+    </svg>
+    <figcaption>
+      <ol class="route__steps">{site.route.map((s) => <li>{s.label}</li>)}</ol>
+    </figcaption>
+  </figure>
+
+  <!-- Карта: виджет Яндекса на карточке барбершопа, грузится, когда секция рядом -->
+  <div class="find__map" data-map data-map-src={site.mapEmbed}>
+    <div class="find__map-wait" aria-hidden="true"><span class="find__pin"></span></div>
+  </div>
+  <div class="find__map-links">
+    <a class="btn" href={site.mapRoute} target="_blank" rel="noopener">Построить маршрут</a>
+    <a class="link-under" href={site.mapOrg} target="_blank" rel="noopener">Открыть в Яндекс Картах</a>
+  </div>
+</section>
+
+<style>
+  .find { padding: clamp(96px, 12vw, 200px) var(--gutter) clamp(72px, 10vw, 140px); }
+  .find__head { display: grid; grid-template-columns: 1.4fr 1fr; gap: 6vw; align-items: end; }
+  .find__title { font-size: var(--fs-h2); }
+  .find__addr { font-style: normal; display: grid; gap: 6px; }
+  .find__street { font: 600 clamp(26px, 2.6vw, 40px)/1 var(--font-display); text-transform: uppercase; margin-bottom: 6px; }
+
+  .route { margin: clamp(48px, 7vw, 110px) 0 0; }
+  .route__svg { width: 100%; height: auto; overflow: visible; }
+  .route__svg--mob { display: none; }
+  @media (max-width: 760px) {
+    .route__svg--desk { display: none; }
+    .route__svg--mob { display: block; width: 100%; max-width: 420px; margin: 0 auto; }
+  }
+  .route__steps { list-style: none; counter-reset: s; padding: 0; margin: 18px 0 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .route__steps li { counter-increment: s; font: 600 clamp(18px, 1.7vw, 26px)/1.05 var(--font-display); text-transform: uppercase; }
+  .route__steps li::before { content: counter(s); display: block; font: italic 700 14px/1 var(--font-numeral); margin-bottom: 6px; }
+
+  .find__map { position: relative; margin-top: clamp(48px, 6vw, 96px); aspect-ratio: 16 / 7; overflow: hidden; border: 3px solid var(--ink); background: #e8e6df; }
+  .find__map :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .find__map-wait { position: absolute; inset: 0; display: grid; place-items: center; }
+  .find__pin { width: 26px; height: 26px; border-radius: 50% 50% 50% 0; rotate: -45deg; background: var(--door-red); border: 3px solid var(--ink); }
+  .find__map-links { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; margin-top: 20px; }
+
+  @media (max-width: 760px) {
+    .find__head { grid-template-columns: 1fr; }
+    .route__steps { grid-template-columns: 1fr 1fr; }
+    .find__map { aspect-ratio: 4 / 5; }
+  }
+</style>

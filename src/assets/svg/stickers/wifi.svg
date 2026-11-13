@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="sticker sticker--wifi">
+  <defs>
+    <filter id="wifi-wob" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="5"/><feDisplacementMap in="SourceGraphic" scale="3.5" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <filter id="wifi-spray" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3.2"/></filter>
+    <radialGradient id="wifi-glow" cx=".5" cy=".45" r=".6"><stop offset="0" stop-color="#F6E04A"/><stop offset=".55" stop-color="#F0C93A"/><stop offset="1" stop-color="#E2A72B"/></radialGradient>
+  </defs>
+  <g transform="rotate(0 100 100)">
+    <g filter="url(#wifi-spray)" opacity=".45" fill="none" stroke="#9A3424" stroke-width="14" stroke-linejoin="round" stroke-linecap="round">
+ <path data-f="#C9C8BC" d="M14 186 V112 H54 V96 H96 V120 H132 V84 H186 V186 Z"/></g>
+    <g filter="url(#wifi-wob)" stroke="#9A3424" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+ <path fill="#C9C8BC" d="M14 186 V112 H54 V96 H96 V120 H132 V84 H186 V186 Z"/></g>
+    <g filter="url(#wifi-wob)"><rect x="24" y="126" width="14" height="16" fill="url(#wifi-glow)" stroke="#9A3424" stroke-width="3"/><rect x="62" y="110" width="14" height="16" fill="url(#wifi-glow)" stroke="#9A3424" stroke-width="3"/><rect x="62" y="150" width="14" height="16" fill="url(#wifi-glow)" stroke="#9A3424" stroke-width="3"/><rect x="142" y="100" width="14" height="16" fill="url(#wifi-glow)" stroke="#9A3424" stroke-width="3"/><rect x="162" y="100" width="14" height="16" fill="url(#wifi-glow)" stroke="#9A3424" stroke-width="3"/><rect x="142" y="140" width="14" height="16" fill="url(#wifi-glow)" stroke="#9A3424" stroke-width="3"/><path d="M158 84 V48 M158 56 L140 36 M158 56 L176 36" stroke="#9A3424" stroke-width="5" stroke-linecap="round"/><path d="M144 39 Q158 26 172 39" fill="none" stroke="#E2A72B" stroke-width="7" stroke-linecap="round"/><path d="M130 34 Q158 9 186 34" fill="none" stroke="#E2A72B" stroke-width="7" stroke-linecap="round"/><path d="M116 29 Q158 -8 200 29" fill="none" stroke="#F6E04A" stroke-width="7" stroke-linecap="round"/></g>
+    
+  </g>
+</svg>

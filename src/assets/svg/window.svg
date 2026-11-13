@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 150" class="mural-window">
+  <!-- Окно с их стены: горчичное стекло, кривая красно-коричневая рама от руки. Свет задаётся CSS-переменными win-fill, win-hot, win-glow -->
+  <path class="glass" fill="var(--win-fill, #E8B320)" d="M9 11 L111 8 L113 141 L7 143 Z"/>
+  <path class="glow" fill="var(--win-hot, #F2DC3A)" opacity="var(--win-glow, .85)" d="M22 24 Q60 10 98 26 L100 128 Q60 140 20 128 Z"/>
+  <g fill="none" stroke="var(--win-frame, #6E382F)" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="9" d="M8 10 L112 7 L113 142 L6 144 Z"/>
+    <path stroke-width="6" d="M60 9 Q58 75 61 142 M7 74 Q60 71 113 76"/>
+  </g>
+  <path fill="none" stroke="var(--win-frame, #6E382F)" stroke-width="2" opacity=".55" d="M24 40 q8 -6 16 0 M78 98 q10 -7 18 1 M70 32 q6 -4 12 0"/>
+</svg>

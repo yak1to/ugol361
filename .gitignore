@@ -1,0 +1,12 @@
+node_modules
+dist
+.astro
+.DS_Store
+.vercel
+# рабочие материалы — не в публичный репозиторий
+PLAN.md
+docs/
+.agents/
+.claude/
+.playwright-mcp/
+skills-lock.json

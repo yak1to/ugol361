@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="sticker sticker--parking">
+  <defs>
+    <filter id="parking-wob" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3.5" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <filter id="parking-spray" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3.2"/></filter>
+    <radialGradient id="parking-glow" cx=".5" cy=".45" r=".6"><stop offset="0" stop-color="#F6E04A"/><stop offset=".55" stop-color="#F0C93A"/><stop offset="1" stop-color="#E2A72B"/></radialGradient>
+  </defs>
+  <g transform="rotate(-5 100 100)">
+    <g filter="url(#parking-spray)" opacity=".45" fill="none" stroke="#9A3424" stroke-width="14" stroke-linejoin="round" stroke-linecap="round">
+ <path data-f="#0A33B0" d="M30 30 Q100 18 170 30 Q182 100 170 170 Q100 182 30 170 Q18 100 30 30 Z"/></g>
+    <g filter="url(#parking-wob)" stroke="#9A3424" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+ <path fill="#0A33B0" d="M30 30 Q100 18 170 30 Q182 100 170 170 Q100 182 30 170 Q18 100 30 30 Z"/></g>
+    <g filter="url(#parking-wob)"><path d="M86 160 q2 14 0 22 q-6 4 -6 -4 Z" fill="#F4F1EC" stroke="#E3062C" stroke-width="3"/></g>
+    <g transform="translate(5 6)" fill="#754D42" stroke="#754D42" stroke-width="7" stroke-linejoin="round"><path vector-effect="non-scaling-stroke" transform="rotate(0 100.0 92.0) translate(38.9 149.7) scale(0.1648)" d="M82 0Q71 0 63 -8Q55 -16 55 -27V-673Q55 -684 63 -692Q71 -700 82 -700H385Q476 -700 543.5 -673.5Q611 -647 648.5 -592.5Q686 -538 686 -455Q686 -372 648.5 -319.5Q611 -267 543.5 -242.5Q476 -218 385 -218H315V-27Q315 -16 307 -8Q299 0 288 0ZM310 -403H380Q396 -403 411 -415.5Q426 -428 426 -457Q426 -476 416.5 -495Q407 -514 380 -514H310Z"/></g><g fill="#F4F1EC" stroke="#E3062C" stroke-width="5" stroke-linejoin="round"><path vector-effect="non-scaling-stroke" transform="rotate(0 100.0 92.0) translate(38.9 149.7) scale(0.1648)" d="M82 0Q71 0 63 -8Q55 -16 55 -27V-673Q55 -684 63 -692Q71 -700 82 -700H385Q476 -700 543.5 -673.5Q611 -647 648.5 -592.5Q686 -538 686 -455Q686 -372 648.5 -319.5Q611 -267 543.5 -242.5Q476 -218 385 -218H315V-27Q315 -16 307 -8Q299 0 288 0ZM310 -403H380Q396 -403 411 -415.5Q426 -428 426 -457Q426 -476 416.5 -495Q407 -514 380 -514H310Z"/></g>
+  </g>
+</svg>

@@ -1,0 +1,46 @@
+---
+import { site } from '../../config/site';
+---
+<section class="inside bricks barbers" aria-labelledby="barbers-title">
+  <h2 id="barbers-title" class="display barbers__title">Кто стрижёт</h2>
+  <ol class="barbers__list">
+    {site.barbers.map((b, i) => (
+      <li class={`barber barber--${i % 3}`}>
+        <div class="barber__media">
+          <div class="barber__placeholder" role="img" aria-label="Фото мастера появится здесь">
+            <span class="caption">[фото мастера]</span>
+          </div>
+        </div>
+        <div class="barber__text">
+          <p class="barber__name display">{b.name}</p>
+          <p class="barber__role">{b.role}</p>
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .barbers { padding: clamp(96px, 12vw, 200px) var(--gutter) clamp(72px, 10vw, 160px); }
+  .barbers__title { font-size: var(--fs-h2); max-width: 8ch; }
+  .barbers__list { list-style: none; margin: clamp(40px, 6vw, 96px) 0 0; padding: 0; display: grid; gap: clamp(40px, 5vw, 80px); }
+  .barber { display: grid; grid-template-columns: clamp(160px, 17vw, 260px) 1fr; align-items: end; gap: clamp(20px, 3vw, 48px); }
+  .barber--1 { margin-left: 22vw; }
+  .barber--2 { margin-left: 8vw; }
+  .barber__media { position: relative; aspect-ratio: 3 / 4; }
+  .barber__placeholder {
+    position: absolute; inset: 0; display: grid; place-items: center; color: var(--paper);
+    background: repeating-linear-gradient(135deg, var(--ink) 0 14px, #2a2a26 14px 28px);
+    border: 3px solid var(--ink);
+  }
+  .barber__text { padding-bottom: 4px; }
+  .barber__name { font-size: clamp(40px, 6vw, 104px); margin: 0; line-height: .95; }
+  .barber__role { margin: 14px 0 0; font-size: clamp(15px, 1.2vw, 18px); line-height: 1.35; max-width: 26ch; }
+  @media (max-width: 760px) {
+    .barber, .barber--1, .barber--2 { grid-template-columns: 30vw 1fr; margin-left: 0; gap: 16px; }
+    .barbers__list { gap: 28px; }
+    .barber__placeholder .caption { font-size: 11px; text-align: center; padding: 0 6px; }
+    .barber__name { font-size: 36px; }
+    .barber__role { margin-top: 8px; }
+  }
+</style>

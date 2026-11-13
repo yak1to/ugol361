@@ -1,0 +1,41 @@
+---
+import MuralWindow from '../ui/MuralWindow.astro';
+import { site } from '../../config/site';
+// Окна раскиданы как на их стене. lit=false — загорятся по скроллу в фазе 4
+const windows = [
+  { x: 72, y: 6, w: 110, lit: true }, { x: 88, y: 30, w: 80, lit: false }, { x: 3, y: 88, w: 96, lit: false },
+  { x: 30, y: 86, w: 130, lit: true }, { x: 84, y: 86, w: 72, lit: false }, { x: 40, y: 2, w: 64, lit: false },
+];
+---
+<section class="inside bricks manifesto" aria-label="О нас">
+  <div class="manifesto__windows" aria-hidden="true">
+    {windows.map((w) => (
+      <MuralWindow lit={w.lit} width={`clamp(${Math.round(w.w * .55)}px, ${w.w / 14}vw, ${w.w}px)`} class="manifesto__win" style={`left:${w.x}%;top:${w.y}%`} />
+    ))}
+  </div>
+  <p class="manifesto__text display" data-manifesto>
+    {site.manifesto.map((line, i) => <span class={`manifesto__line l${i}`}>{line}</span>)}
+  </p>
+  <p class="manifesto__note">{site.manifestoNote}</p>
+</section>
+
+<style>
+  .manifesto { position: relative; padding: clamp(96px, 14vw, 220px) var(--gutter); overflow: hidden; }
+  .manifesto__windows { position: absolute; inset: 0; pointer-events: none; }
+  .manifesto__windows :global(.manifesto__win) { position: absolute; }
+  .manifesto__text { position: relative; font-size: clamp(42px, 6.8vw, 124px); line-height: 1.1; margin: 0; }
+  .manifesto__line { display: block; max-width: 17ch; }
+  .manifesto__line + .manifesto__line { margin-top: .3em; }
+  .manifesto__line.l1 { margin-left: 12vw; color: var(--ink); }
+  .manifesto__line.l2 { margin-left: 4vw; }
+  .manifesto__note { position: relative; max-width: 30ch; margin: 56px 0 0 auto; margin-right: 8vw; font-size: var(--fs-lead); line-height: 1.15; }
+
+  @media (max-width: 760px) {
+    .manifesto__line.l1, .manifesto__line.l2 { margin-left: 0; }
+    .manifesto__windows :global(.manifesto__win) { display: none; }
+    .manifesto__windows :global(.manifesto__win:nth-child(1)) { display: block; left: auto !important; right: 16px; top: 28px !important; }
+    .manifesto__windows :global(.manifesto__win:nth-child(3)) { display: block; left: 16px !important; top: auto !important; bottom: 28px; }
+    .manifesto { padding-top: 120px; padding-bottom: 130px; }
+    .manifesto__note { margin-right: 0; }
+  }
+</style>

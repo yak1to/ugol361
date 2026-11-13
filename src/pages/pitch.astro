@@ -1,0 +1,94 @@
+---
+// Скрытая страница для владельца: до/после, что он получает, что нужно от него. noindex.
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Logo from '../components/ui/Logo.astro';
+import before from '../assets/pitch/before.png';
+import after from '../assets/pitch/after.png';
+import { site } from '../config/site';
+import { url } from '../lib/url';
+
+const gets = [
+  'Сайт в стиле вашего зала: кирпич, жёлтые окна, граффити и бордовый фасад',
+  'Цены, акция для новых клиентов и запись через ваш YCLIENTS в один тап',
+  'Маршрут от Профсоюзной и карта сразу на вашей карточке',
+  `Живые отзывы с Яндекса и рейтинг ${site.rating.value.toFixed(1)}`,
+  'Быстро открывается с телефона, есть разметка для Яндекса и Google',
+  'Цены и тексты меняются в одном файле, без программиста',
+];
+const needs = [
+  'Исходник логотипа: SVG, AI или PDF',
+  'Фото мастеров и их работ. Согласие клиентов на фото',
+  'Часы работы: на двери 10–22, в картах 11–22. Как правильно?',
+  'Ссылку на MAX и цену детской стрижки',
+  'Какие отзывы показать на сайте (сейчас три с Яндекса)',
+];
+---
+<Base title={`Сайт для ${site.name}`} noindex>
+  <main class="facade pitch" id="main">
+    <header class="pitch__head">
+      <Logo class="pitch__logo" />
+      <h1 class="pitch__title display">Сайт для вашего барбершопа</h1>
+      <a class="btn" href={url()}>Открыть демо</a>
+    </header>
+
+    <section class="pitch__ba" aria-label="Было и стало">
+      <figure>
+        <figcaption class="caption">Сейчас: карточка в Картах</figcaption>
+        <Image src={before} alt="Карточка «Угол 361» в Яндекс Картах" widths={[640, 1280]} sizes="(max-width: 760px) 90vw, 32vw" />
+      </figure>
+      <p class="pitch__arrow numeral" aria-hidden="true">+1<span>°</span></p>
+      <figure class="pitch__phone">
+        <figcaption class="caption">Будет: свой сайт</figcaption>
+        <Image src={after} alt="Первый экран сайта «Угол 361» на телефоне" widths={[390, 780]} sizes="(max-width: 760px) 60vw, 16vw" />
+      </figure>
+    </section>
+
+    <section class="pitch__lists">
+      <div>
+        <h2 class="pitch__h2 display">Что вы получаете</h2>
+        <ul class="pitch__list">{gets.map((g) => <li>{g}</li>)}</ul>
+      </div>
+      <div>
+        <h2 class="pitch__h2 display">Что нужно от вас</h2>
+        <ul class="pitch__list pitch__list--todo">{needs.map((n) => <li>{n}</li>)}</ul>
+      </div>
+    </section>
+
+    <footer class="pitch__foot caption">
+      <span>Демо собрано на публичных фото и данных из карточки. Логотип временный.</span>
+      <span class="pitch__contact">[ВАШЕ ИМЯ И КОНТАКТ]</span>
+    </footer>
+  </main>
+</Base>
+
+<style>
+  .pitch { min-height: 100svh; padding: clamp(20px, 3vw, 40px) var(--gutter); display: grid; gap: clamp(24px, 3vw, 40px); }
+  .pitch__head { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 24px; }
+  .pitch :global(.pitch__logo) { width: 130px; }
+  .pitch__title { font-size: clamp(30px, 3.6vw, 56px); }
+
+  .pitch__ba { display: grid; grid-template-columns: 1.6fr auto 1fr; align-items: center; gap: clamp(16px, 3vw, 48px); }
+  .pitch__ba figure { margin: 0; display: grid; gap: 10px; }
+  .pitch__ba img { width: 100%; height: auto; border: 3px solid var(--paper); }
+  .pitch__phone img { max-height: 46vh; width: auto; border-radius: 18px; }
+  .pitch__arrow { font-size: clamp(48px, 6vw, 96px); color: var(--window-hot); margin: 0; }
+  .pitch__arrow span { font-size: .42em; vertical-align: .9em; font-style: normal; }
+
+  .pitch__lists { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 64px); }
+  .pitch__h2 { font-size: clamp(24px, 2.4vw, 36px); margin-bottom: 14px; }
+  .pitch__list { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 16px; line-height: 1.35; }
+  .pitch__list li { padding-left: 1.4em; position: relative; }
+  .pitch__list li::before { content: '+'; position: absolute; left: 0; color: var(--window); font-weight: 700; }
+  .pitch__list--todo li::before { content: ''; top: .3em; width: .8em; height: .8em; border: 2px solid var(--window); }
+
+  .pitch__foot { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; opacity: .8; }
+  .pitch__contact { color: var(--window-hot); opacity: 1; }
+
+  @media (max-width: 760px) {
+    .pitch__head { grid-template-columns: 1fr; }
+    .pitch__ba, .pitch__lists { grid-template-columns: 1fr; }
+    .pitch__arrow { justify-self: center; }
+    .pitch__phone img { max-height: 70vh; }
+  }
+</style>

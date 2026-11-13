@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="sticker sticker--qr">
+  <defs>
+    <filter id="qr-wob" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="6"/><feDisplacementMap in="SourceGraphic" scale="3.5" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <filter id="qr-spray" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3.2"/></filter>
+    <radialGradient id="qr-glow" cx=".5" cy=".45" r=".6"><stop offset="0" stop-color="#F6E04A"/><stop offset=".55" stop-color="#F0C93A"/><stop offset="1" stop-color="#E2A72B"/></radialGradient>
+  </defs>
+  <g transform="rotate(6 100 100)">
+    <g filter="url(#qr-spray)" opacity=".45" fill="none" stroke="#9A3424" stroke-width="14" stroke-linejoin="round" stroke-linecap="round">
+ <rect data-f="#2A1712" x="62" y="28" width="76" height="140" rx="16"/>
+ <rect data-f="url(#qr-glow)" x="72" y="50" width="56" height="96" rx="6"/></g>
+    <g filter="url(#qr-wob)" stroke="#9A3424" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+ <rect fill="#2A1712" x="62" y="28" width="76" height="140" rx="16"/>
+ <rect fill="url(#qr-glow)" x="72" y="50" width="56" height="96" rx="6"/></g>
+    <g filter="url(#qr-wob)"><circle cx="84" cy="40" r="8" fill="#F4F1EC" stroke="#9A3424" stroke-width="3.5"/><circle cx="82" cy="39" r="3.4" fill="#2A1712"/><circle cx="97.6" cy="40" r="8" fill="#F4F1EC" stroke="#9A3424" stroke-width="3.5"/><circle cx="95.6" cy="39" r="3.4" fill="#2A1712"/><g fill="#6E382F"><rect x="78" y="72" width="16" height="16"/><rect x="106" y="72" width="16" height="16"/><rect x="78" y="118" width="16" height="16"/><rect x="100" y="98" width="7" height="7"/><rect x="110" y="108" width="7" height="7"/><rect x="116" y="124" width="10" height="10"/><rect x="100" y="126" width="7" height="7"/></g><path d="M64 100 Q40 92 34 70" fill="none" stroke="#9A3424" stroke-width="17" stroke-linecap="round"/><path d="M64 100 Q40 92 34 70" fill="none" stroke="#F2A766" stroke-width="10" stroke-linecap="round"/><path d="M136 100 Q160 108 168 132" fill="none" stroke="#9A3424" stroke-width="17" stroke-linecap="round"/><path d="M136 100 Q160 108 168 132" fill="none" stroke="#F2A766" stroke-width="10" stroke-linecap="round"/><path d="M20 62 q0 -12 12 -12 q12 0 12 12 q0 11 -12 11 q-12 0 -12 -11 Z" fill="#F4F1EC" stroke="#9A3424" stroke-width="4"/><path d="M158 140 q0 -12 12 -12 q12 0 12 12 q0 11 -12 11 q-12 0 -12 -11 Z" fill="#F4F1EC" stroke="#9A3424" stroke-width="4"/></g>
+    
+  </g>
+</svg>

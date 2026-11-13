@@ -1,0 +1,13 @@
+---
+// ВРЕМЕННЫЙ логотип (перерисован по аватарке) — заменить на исходник владельца
+import svg from '../../assets/svg/logo.svg?raw';
+interface Props { class?: string; label?: string }
+const { class: cls = '', label = 'Угол 361' } = Astro.props;
+---
+<span class={`logo ${cls}`} role="img" aria-label={label} set:html={svg.replace(/<title>.*?<\/title>/, '').replace('role="img"', 'aria-hidden="true"')} />
+<style>
+  .logo { display: block; color: currentColor; }
+  .logo :global(svg) { width: 100%; height: auto; overflow: visible; }
+  /* циферблат «361» вращается вокруг центра круга (Фаза 4) */
+  .logo :global(.lg-dial) { transform-box: view-box; transform-origin: 475px 199px; }
+</style>

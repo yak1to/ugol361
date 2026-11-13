@@ -1,0 +1,11 @@
+---
+const files = import.meta.glob('../../assets/svg/stickers/*.svg', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+interface Props { id: string; size?: string; class?: string; label?: string }
+const { id, size = '120px', class: cls = '', label } = Astro.props;
+const svg = files[`../../assets/svg/stickers/${id}.svg`] ?? '';
+---
+<span class={`sticker ${cls}`} style={`--size:${size}`} role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : 'true'} set:html={svg} />
+<style>
+  .sticker { display: inline-block; width: var(--size); aspect-ratio: 1; flex: none; }
+  .sticker :global(svg) { width: 100%; height: 100%; overflow: visible; }
+</style>

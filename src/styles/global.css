@@ -1,0 +1,110 @@
+/* Токены цветов/шрифтов приходят из src/config/site.ts (Base.astro → :root) */
+:root {
+  --ease-out: cubic-bezier(.16, 1, .3, 1);      /* expo.out для заходов */
+  --ease-snap: cubic-bezier(.34, 1.56, .64, 1); /* overshoot для «щелчков» */
+  --t-micro: 180ms;
+  --gutter: clamp(16px, 4vw, 56px);
+  --fs-caption: 14px;
+  --fs-body: clamp(16px, 1.05vw + 11px, 19px);
+  --fs-lead: clamp(22px, 2.2vw, 34px);
+  --fs-h2: clamp(44px, 8vw, 132px);
+  --fs-mega: clamp(96px, 19vw, 360px);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+html, body { overflow-x: clip; }
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font: 400 var(--fs-body)/1.5 var(--font-body);
+  font-feature-settings: 'ss01';
+  -webkit-font-smoothing: antialiased;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; }
+
+/* Миры */
+.facade { background: var(--wine); color: var(--paper); position: relative; isolation: isolate; }
+.facade::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none; z-index: -1;
+  background-image: var(--grain); opacity: .045; mix-blend-mode: screen;
+}
+.inside { background: var(--brick); color: var(--ink); position: relative; }
+
+/* Типографика */
+.display {
+  font-family: var(--font-display); font-weight: 700; text-transform: uppercase;
+  letter-spacing: -.015em; line-height: .9; margin: 0;
+}
+.numeral { font-family: var(--font-numeral); font-style: italic; font-weight: 700; }
+.caption { font-size: var(--fs-caption); line-height: 1.4; }
+.graffiti { font-family: var(--font-graffiti); font-weight: 400; }
+
+:focus-visible { outline: 3px solid var(--window-hot); outline-offset: 3px; }
+
+/* Кнопка = горящее окно */
+.btn {
+  --bg: var(--window);
+  display: inline-flex; align-items: center; gap: .6em;
+  padding: .7em 1.1em .62em;
+  font: 600 clamp(18px, 1.6vw, 24px)/1 var(--font-display); text-transform: uppercase; letter-spacing: .01em;
+  color: var(--ink); text-decoration: none; cursor: pointer;
+  background: radial-gradient(120% 140% at 50% 45%, var(--window-hot) 0 35%, var(--bg) 80%);
+  border: 3px solid var(--window-frame);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--window-hot) 0%, transparent);
+  transition: box-shadow var(--t-micro) ease-out, transform var(--t-micro) ease-out;
+}
+.btn:hover { box-shadow: 0 0 34px 2px color-mix(in srgb, var(--window-hot) 45%, transparent); }
+.btn:active { transform: translateY(1px) scale(.985); }
+.btn--ghost {
+  background: none; color: inherit; border-color: currentColor; box-shadow: none;
+}
+.btn--ghost:hover { background: var(--paper); color: var(--wine); box-shadow: none; }
+.link-under {
+  text-decoration: none; background: linear-gradient(currentColor 0 0) 0 100% / 100% 1px no-repeat;
+  transition: background-size var(--t-micro) ease-out; padding-bottom: 2px;
+}
+.link-under:hover { background-size: 0 1px; background-position: 100% 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; scroll-behavior: auto !important; }
+}
+
+/* Кирпичная кладка: тонкие швы поверх --brick, без картинок */
+.bricks {
+  background-color: var(--brick);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60'%3E%3Cg fill='none' stroke='%23807F72' stroke-width='2' opacity='.45'%3E%3Cpath d='M0 1H120M0 31H120M30 1V31M90 1V31M0 31V60M60 31V60M120 31V60'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 120px 60px;
+}
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.btn--big { font-size: clamp(22px, 2vw, 30px); padding: .75em 1.4em .66em; }
+.btn--huge { font-size: clamp(34px, 5vw, 80px); padding: .45em .9em .38em; border-width: 4px; }
+
+/* Счётчик градусов в углу экрана */
+.deg-fixed { position: fixed; right: 0; top: 50%; translate: 0 -50%; z-index: 50; color: var(--paper); background: var(--ink); padding: 8px 10px 6px 12px; font-size: 18px !important; }
+@media (max-width: 760px) { .deg-fixed { display: none !important; } }
+.preloader[hidden] { display: none; }
+
+/* Курсор-«свет» (только мышь, десктоп). Размер меняется через scale — без layout */
+.cursor { position: fixed; left: 0; top: 0; z-index: 90; pointer-events: none; width: 104px; height: 104px; }
+.cursor__dot {
+  position: absolute; inset: 0; border-radius: 50%; display: grid; place-items: center;
+  background: radial-gradient(circle, var(--window-hot), var(--window));
+  border: 0 solid var(--window-hot);
+  transform: scale(.135); transition: transform 240ms var(--ease-out), background-color 160ms;
+}
+.cursor__label { font: 600 15px/1 var(--font-display); text-transform: uppercase; color: var(--ink); opacity: 0; transition: opacity 160ms; }
+.cursor.is-link .cursor__dot { transform: scale(.44); background: transparent; border-width: 4px; }
+.cursor.is-view .cursor__dot { transform: scale(1); }
+.cursor.is-view .cursor__label { opacity: 1; }
+.has-cursor [data-lookbook] { cursor: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mwin { --win-fill: var(--window) !important; --win-hot: var(--window-hot) !important; --win-glow: .85 !important; }
+}
+
+.skip { position: fixed; left: 12px; top: 12px; z-index: 200; padding: 10px 14px; background: var(--window); color: var(--ink); font-weight: 600; transform: translateY(-160%); transition: transform 160ms var(--ease-out); }
+.skip:focus { transform: none; }

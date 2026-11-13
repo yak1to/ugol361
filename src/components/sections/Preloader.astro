@@ -1,0 +1,13 @@
+---
+import Logo from '../ui/Logo.astro';
+// «361» делает оборот на 361° с пружиной, щелчок, шторка уезжает вверх (≤1.2 с).
+// Виден только при html.motion (ставится inline-скриптом до отрисовки).
+---
+<div class="preloader facade" data-preloader aria-hidden="true">
+  <Logo class="preloader__logo" />
+</div>
+<style>
+  .preloader { display: none; position: fixed; inset: 0; z-index: 100; place-items: center; }
+  :global(html.intro) .preloader { display: grid; }
+  .preloader :global(.preloader__logo) { width: min(60vw, 520px); }
+</style>

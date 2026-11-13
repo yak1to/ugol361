@@ -1,0 +1,233 @@
+---
+import Base from '../layouts/Base.astro';
+import '@fontsource/rubik-spray-paint/cyrillic.css';
+import '@fontsource/rubik-spray-paint/latin.css';
+import Logo from '../components/ui/Logo.astro';
+import Sticker from '../components/ui/Sticker.astro';
+import MuralWindow from '../components/ui/MuralWindow.astro';
+import PriceRow from '../components/ui/PriceRow.astro';
+import PromoSticker from '../components/ui/PromoSticker.astro';
+import DegreeCounter from '../components/motion/DegreeCounter.astro';
+import BarberPole from '../components/motion/BarberPole.astro';
+import doorSvg from '../assets/svg/door.svg?raw';
+import { site } from '../config/site';
+
+const c = site.theme.colors;
+const facade = [
+  { n: 'wine', v: c.wine, r: 'фон фасада, аватарка' },
+  { n: 'wine-light', v: c.wineLight, r: 'орнамент' },
+  { n: 'paper', v: c.paper, r: 'текст и логотип' },
+  { n: 'door-red', v: c.doorRed, r: 'дверь, акции. Точечно' },
+  { n: 'plum', v: c.plum, r: 'флаг у входа. Редко' },
+];
+const inside = [
+  { n: 'brick', v: c.brick, r: 'кирпич, фон «внутри»' },
+  { n: 'ink', v: c.ink, r: 'кресла, текст, обводки' },
+  { n: 'window', v: c.window, r: 'свет: CTA, цены, курсор' },
+  { n: 'window-hot', v: c.windowHot, r: 'центр света' },
+  { n: 'window-frame', v: c.windowFrame, r: 'рамы, контур персонажей' },
+  { n: 'pole-blue', v: c.poleBlue, r: 'тележки. Одна точка на экран' },
+];
+const p = site.prices;
+---
+<Base title="Стайлгайд — Угол 361" noindex>
+  <!-- ФАСАД -->
+  <header class="facade sg-hero">
+    <div class="sg-hero__meta caption">
+      <span>Стайлгайд, фаза 2</span>
+      <span>Логотип временный, ждём исходник</span>
+    </div>
+    <DegreeCounter value={0} class="sg-hero__deg" />
+    <Logo class="sg-hero__logo" />
+    <p class="sg-hero__sub">
+      {site.address.city}, м. {site.address.metro}.<br />Вход через цветочный.
+    </p>
+  </header>
+
+  <!-- ПАЛИТРА: два мира -->
+  <section class="sg-worlds" aria-labelledby="pal">
+    <h2 id="pal" class="visually-hidden">Палитра</h2>
+    <div class="facade sg-world">
+      <p class="sg-world__title display">Фасад</p>
+      <p class="caption sg-world__rule">Строгий бренд снаружи. Бордовый с зерном, белый, красный только на двери и акциях.</p>
+      <ul class="chips">{facade.map((s) => (
+        <li class="chip"><span class="chip__sw" style={`background:${s.v}`}></span><b>{s.n}</b><span class="caption">{s.v} · {s.r}</span></li>
+      ))}</ul>
+    </div>
+    <div class="inside sg-world">
+      <p class="sg-world__title display">Внутри</p>
+      <p class="caption sg-world__rule">Серый кирпич и жёлтые окна. Жёлтый — это свет: им горит только то, на что надо нажать или посмотреть. На экране не больше двух ярких.</p>
+      <ul class="chips">{inside.map((s) => (
+        <li class="chip"><span class="chip__sw" style={`background:${s.v}`}></span><b>{s.n}</b><span class="caption">{s.v} · {s.r}</span></li>
+      ))}</ul>
+    </div>
+  </section>
+
+  <!-- ШРИФТЫ -->
+  <section class="facade sg-type">
+    <p class="display sg-type__mega" aria-label="Oswald 700">Угол</p>
+    <div class="sg-type__row">
+      <p class="numeral sg-type__num">361°</p>
+      <div class="sg-type__specs caption">
+        <p><b>Oswald 700</b>, капс, −1.5%. Заголовки, цены, кнопки. Узкий высокий гротеск как в логотипе. Финал: Druk Cyr.</p>
+        <p><b>Playfair Display Italic</b>. Цифры, градусы, мелкие ремарки. Та же контрастная антиква, что в «361».</p>
+        <p><b>Onest</b>. Весь текст. Не Inter.</p>
+        <p><b>Rubik Spray Paint</b>. Один-два раза на сайт, как тег на стене.</p>
+      </div>
+    </div>
+    <div class="sg-type__body">
+      <p class="sg-type__lead">Стрижём не «как обычно». Блонд, красный, химия, шторки — подбираем под лицо, а не под прайс.</p>
+      <p>Если не знаешь, чего хочешь, — так и скажи. Барбер посмотрит на форму головы, на то, как лежат волосы, и предложит пару вариантов. После стрижки покажет, как укладывать дома за две минуты.</p>
+      <p class="graffiti sg-type__tag">угол</p>
+    </div>
+    <ol class="sg-scale caption">
+      <li><span style="font-size:var(--fs-mega)" class="display">Аа</span>mega 96–360px</li>
+      <li><span style="font-size:var(--fs-h2)" class="display">Аа</span>h2 44–132px</li>
+      <li><span style="font-size:var(--fs-lead)">Аа</span>lead 22–34px</li>
+      <li><span style="font-size:var(--fs-body)">Аа</span>body 16–19px</li>
+      <li><span style="font-size:12px">Аа</span>caption 12px</li>
+    </ol>
+  </section>
+
+  <!-- ВНУТРИ: компоненты -->
+  <section class="inside sg-comp">
+    <div class="sg-block sg-buttons">
+      <p class="sg-label caption">Кнопки. Главная горит как окно, магнитная (фаза 4)</p>
+      <div class="sg-buttons__row">
+        <a class="btn" href={site.booking.href} target="_blank" rel="noopener">{site.booking.label}</a>
+        <a class="link-under" href={site.phone.href}>{site.phone.display}</a>
+      </div>
+      <div class="facade sg-buttons__dark">
+        <a class="btn" href={site.booking.href} target="_blank" rel="noopener">{site.booking.label}</a>
+        <a class="btn btn--ghost" href={site.socials[0].href}>Написать в Telegram</a>
+      </div>
+    </div>
+
+    <div class="sg-block sg-prices">
+      <p class="sg-label caption">Прайс как вывеска. Наведи на строку — загорится</p>
+      <ul class="sg-prices__list">
+        {p.items.slice(0, 3).map((i) => <PriceRow {...i} />)}
+      </ul>
+      <PromoSticker {...p.promo} class="sg-prices__promo" />
+    </div>
+
+    <div class="sg-block sg-windows">
+      <p class="sg-label caption">Окна. По скроллу загораются по очереди. Здесь — по наведению</p>
+      <div class="sg-windows__row">
+        {[0, 1, 2, 3, 4].map((i) => <MuralWindow lit={i % 2 === 0} width={`${[96, 120, 84, 132, 104][i]}px`} class="sg-win" />)}
+      </div>
+    </div>
+
+    <div class="sg-block sg-stickers">
+      <p class="sg-label caption">Стикеры. Язык их стены: спрей, контур красно-коричневый, глаза-пуговки</p>
+      <div class="sg-stickers__row">
+        {site.features.map((f) => (
+          <figure><Sticker id={f.id} size="132px" /><figcaption class="caption">{f.label}</figcaption></figure>
+        ))}
+        <figure><Sticker id="bubble" size="132px" /><figcaption class="caption">пузырь</figcaption></figure>
+        <figure><Sticker id="scissors" size="132px" /><figcaption class="caption">ножницы</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="sg-block sg-misc">
+      <div>
+        <p class="sg-label caption">Дверь. Зум в красную рамку = переход в серый мир</p>
+        <div class="sg-door" set:html={doorSvg} />
+      </div>
+      <div>
+        <p class="sg-label caption">Счётчик градусов. Покрути</p>
+        <div class="sg-deg">
+          <DegreeCounter value={127} class="sg-deg__big" />
+          <input type="range" min="0" max="361" value="127" aria-label="Градусы" id="deg-range" />
+        </div>
+      </div>
+      <div>
+        <p class="sg-label caption">Столб. Прелоадер</p>
+        <BarberPole height="160px" />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const r = document.getElementById('deg-range') as HTMLInputElement | null;
+  const box = document.querySelector('.sg-deg__big') as HTMLElement | null;
+  r?.addEventListener('input', () => {
+    if (!box) return;
+    const v = +r.value;
+    box.querySelector('.deg__num')!.textContent = String(v).padStart(3, '0');
+    box.classList.toggle('is-full', v >= 361);
+  });
+  document.querySelectorAll<HTMLElement>('.sg-win').forEach((w) => {
+    w.addEventListener('pointerenter', () => w.classList.toggle('is-lit'));
+  });
+</script>
+
+<style>
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .caption { margin: 0; }
+
+  .sg-hero { min-height: 92vh; padding: var(--gutter); display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto 1fr auto; gap: 24px; }
+  .sg-hero__meta { display: flex; flex-direction: column; gap: 4px; opacity: .75; }
+  :global(.sg-hero__deg) { justify-self: end; }
+  :global(.sg-hero__logo) { grid-column: 1 / -1; width: min(86vw, 1180px); align-self: center; margin-left: -.6vw; }
+  .sg-hero__sub { grid-column: 1 / -1; justify-self: end; text-align: right; font-size: var(--fs-lead); line-height: 1.15; margin: 0; max-width: 22ch; }
+
+  .sg-worlds { display: grid; grid-template-columns: 1.15fr 1fr; }
+  .sg-world { padding: calc(var(--gutter) * 1.4) var(--gutter); }
+  .sg-world__title { font-size: var(--fs-h2); }
+  .sg-world__rule { max-width: 46ch; margin: 18px 0 32px; font-size: 14px; }
+  .chips { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+  .chip { display: grid; grid-template-columns: 64px 9em 1fr; align-items: center; gap: 14px; }
+  .chip__sw { height: 44px; border: 2px solid currentColor; }
+  .chip b { font: 600 18px/1 var(--font-display); text-transform: uppercase; }
+
+  .sg-type { padding: var(--gutter); overflow: hidden; }
+  .sg-type__mega { font-size: var(--fs-mega); margin-left: -.04em; }
+  .sg-type__row { display: grid; grid-template-columns: auto 1fr; gap: 4vw; align-items: end; margin-top: -2vw; }
+  .sg-type__num { font-size: clamp(90px, 15vw, 260px); line-height: .8; margin: 0; color: var(--paper); }
+  .sg-type__specs { display: grid; grid-template-columns: repeat(2, minmax(0, 28ch)); gap: 12px 32px; padding-bottom: 1.4vw; }
+  .sg-type__specs p { margin: 0; }
+  .sg-type__body { max-width: 62ch; margin: 64px 0 0 auto; padding-right: 4vw; }
+  .sg-type__lead { font-size: var(--fs-lead); line-height: 1.12; font-weight: 600; margin: 0 0 20px; max-width: 24ch; }
+  .sg-type__tag { font-size: clamp(64px, 9vw, 140px); color: var(--window); margin: 12px 0 0; transform: rotate(-6deg); line-height: 1; }
+  .sg-scale { list-style: none; padding: 0; margin: 64px 0 0; display: flex; align-items: baseline; gap: 4vw; flex-wrap: wrap; opacity: .85; }
+  .sg-scale li { display: flex; align-items: baseline; gap: 10px; }
+  .sg-scale span { line-height: .9; }
+
+  .sg-comp { padding: calc(var(--gutter) * 1.5) 0; display: grid; gap: 96px; }
+  .sg-block { padding: 0 var(--gutter); }
+  .sg-label { margin-bottom: 18px; color: var(--ink); }
+  .sg-buttons__row, .sg-buttons__dark { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
+  .sg-buttons__dark { margin-top: 18px; padding: 28px; width: fit-content; }
+
+  .sg-prices { padding: 0; position: relative; }
+  .sg-prices .sg-label { padding: 0 var(--gutter); }
+  .sg-prices__list { padding: 0; margin: 0; border-bottom: 2px solid var(--ink); }
+  :global(.sg-prices__promo) { position: absolute; right: 24vw; top: calc(100% - 36px); }
+  .sg-prices { margin-bottom: 220px; }
+
+  .sg-windows__row { display: flex; align-items: flex-end; gap: clamp(16px, 4vw, 56px); flex-wrap: wrap; margin-top: 40px; }
+  .sg-stickers__row { display: flex; flex-wrap: wrap; gap: 20px 28px; }
+  .sg-stickers__row figure { margin: 0; width: 140px; display: grid; justify-items: center; gap: 4px; text-align: center; }
+
+  .sg-misc { display: grid; grid-template-columns: auto 1fr auto; gap: 6vw; align-items: start; }
+  .sg-door { width: 220px; }
+  .sg-deg { display: grid; gap: 16px; }
+  :global(.sg-deg__big) { font-size: clamp(72px, 10vw, 160px) !important; }
+  .sg-deg input { width: min(420px, 100%); accent-color: var(--ink); }
+
+  @media (max-width: 760px) {
+    .sg-hero { min-height: 80vh; }
+    .sg-worlds { grid-template-columns: 1fr; }
+    .chip { grid-template-columns: 48px 1fr; }
+    .chip .caption { grid-column: 2; }
+    .sg-type__row { grid-template-columns: 1fr; }
+    .sg-type__specs { grid-template-columns: 1fr; }
+    .sg-type__body { padding-right: 0; }
+    .sg-prices { margin-bottom: 0; }
+    :global(.sg-prices__promo) { position: relative; right: auto; top: auto; margin: 32px var(--gutter) 0; }
+    .sg-misc { grid-template-columns: 1fr; }
+    .sg-stickers__row figure { width: calc(50% - 14px); }
+  }
+</style>

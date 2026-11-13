@@ -1,0 +1,14 @@
+---
+import svg from '../../assets/svg/window.svg?raw';
+interface Props { lit?: boolean; width?: string; class?: string; style?: string }
+const { lit = true, width = '120px', class: cls = '', style = '' } = Astro.props;
+---
+<span class={`mwin ${lit ? 'is-lit' : ''} ${cls}`} style={`--w:${width};${style}`} data-window aria-hidden="true" set:html={svg} />
+<style>
+  .mwin { display: block; width: var(--w);
+    --win-fill: var(--brick-dark); --win-hot: var(--brick); --win-glow: 0; --win-frame: var(--window-frame); }
+  .mwin :global(svg) { width: 100%; height: auto; }
+  .mwin :global(.glass), .mwin :global(.glow) { transition: fill 400ms var(--ease-out), opacity 400ms var(--ease-out); }
+  .mwin.is-lit { --win-fill: var(--window); --win-hot: var(--window-hot); --win-glow: .85; }
+  .mwin.is-lit :global(svg) { filter: drop-shadow(0 0 18px color-mix(in srgb, var(--window-hot) 40%, transparent)); }
+</style>

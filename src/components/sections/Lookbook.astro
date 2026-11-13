@@ -1,0 +1,59 @@
+---
+import { Picture } from 'astro:assets';
+import { photo } from '../../lib/photos';
+import { site } from '../../config/site';
+// размеры и наклоны «полароидов» чередуются, чтобы лента не была сеткой
+const sizes = ['tall', 'mid', 'tall', 'small', 'mid', 'tall', 'small', 'mid', 'tall'];
+const tilts = [-2.5, 1.5, -1, 3, -3, 1, -1.5, 2.5, -2];
+---
+<section class="inside bricks lookbook" id="works" aria-labelledby="works-title">
+  <div class="lookbook__head">
+    <h2 id="works-title" class="display lookbook__title">Работы</h2>
+    <p class="caption lookbook__src">Клиенты из нашей карточки на Яндекс Картах.<br />Листай вбок.</p>
+  </div>
+  <ul class="lookbook__track" data-lookbook tabindex="0" aria-label="Фото работ, прокрутка вбок">
+    {site.lookbook.map((p, i) => (
+      <li class={`shot shot--${sizes[i % sizes.length]}`} style={`--tilt:${tilts[i % tilts.length]}deg`}>
+        <figure>
+          <Picture src={photo(p.file)} formats={['avif', 'webp']} widths={[320, 520, 760]} sizes="(max-width: 760px) 70vw, 30vw" alt={p.alt} loading="lazy" />
+          <figcaption class="shot__tag">{p.tag}</figcaption>
+        </figure>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .lookbook { padding: clamp(72px, 10vw, 160px) 0 clamp(72px, 9vw, 140px); overflow: hidden; }
+  .lookbook__head { display: flex; justify-content: space-between; align-items: end; gap: 24px; padding: 0 var(--gutter); }
+  .lookbook__title { font-size: var(--fs-mega); margin-left: -.04em; }
+  .lookbook__src { text-align: right; padding-bottom: 1.5vw; }
+
+  .lookbook__track {
+    list-style: none; margin: clamp(32px, 4vw, 56px) 0 0; padding: 24px var(--gutter) 40px;
+    display: flex; align-items: center; gap: clamp(20px, 3vw, 48px);
+    overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none;
+  }
+  .lookbook__track::-webkit-scrollbar { display: none; }
+  /* десктоп + motion: ленту двигает ScrollTrigger, нативный скролл выключен */
+  .lookbook__track:global(.is-pinned) { overflow: visible; scroll-snap-type: none; width: max-content; }
+  .lookbook:has(:global(.is-pinned)) { height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 4vh 0 10vh; }
+  .lookbook:has(:global(.is-pinned)) .lookbook__title { font-size: min(var(--fs-mega), 24vh); }
+  .lookbook:has(:global(.is-pinned)) .lookbook__track { margin-top: 2vh; }
+  @media (max-width: 760px) { .lookbook__head { flex-direction: column; align-items: start; } .lookbook__src { text-align: left; } }
+  .shot { flex: none; scroll-snap-align: center; transform: rotate(var(--tilt)); }
+  .shot--tall { width: clamp(220px, min(26vw, 38vh), 400px); }
+  .shot--mid { width: clamp(190px, min(21vw, 31vh), 330px); margin-top: 7vh; }
+  .shot--small { width: clamp(160px, min(16vw, 25vh), 250px); margin-bottom: 10vh; }
+  .shot figure { margin: 0; position: relative; background: var(--paper); padding: 10px 10px 44px; box-shadow: 0 1px 0 rgba(0,0,0,.08), 6px 10px 0 rgba(30,30,27,.18); }
+  .shot :global(img) { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; }
+  .shot__tag {
+    position: absolute; left: 14px; bottom: 10px;
+    font: 600 16px/1 var(--font-display); text-transform: uppercase; color: #B0001E;
+  }
+  /* на ховере подпись становится стикером */
+  @media (hover: hover) {
+    .shot__tag { transition: transform 200ms var(--ease-snap), background-color 160ms; padding: 4px 8px 3px; margin: -4px -8px; }
+    .shot:hover .shot__tag { background: var(--window); transform: rotate(-5deg) scale(1.15); }
+  }
+</style>

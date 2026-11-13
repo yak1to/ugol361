@@ -1,0 +1,66 @@
+---
+import Base from '../layouts/Base.astro';
+import Preloader from '../components/sections/Preloader.astro';
+import Hero from '../components/sections/Hero.astro';
+import Door from '../components/sections/Door.astro';
+import Manifesto from '../components/sections/Manifesto.astro';
+import Lookbook from '../components/sections/Lookbook.astro';
+import Prices from '../components/sections/Prices.astro';
+import Marquee from '../components/sections/Marquee.astro';
+import Barbers from '../components/sections/Barbers.astro';
+import Reviews from '../components/sections/Reviews.astro';
+import FindUs from '../components/sections/FindUs.astro';
+import FooterCta from '../components/sections/FooterCta.astro';
+import DegreeCounter from '../components/motion/DegreeCounter.astro';
+import MobileBar from '../components/sections/MobileBar.astro';
+import { site } from '../config/site';
+import { barbershopJsonLd } from '../lib/jsonld';
+---
+<Base jsonLd={barbershopJsonLd(Astro.site!)}>
+  <Preloader />
+  <DegreeCounter value={0} class="deg-fixed" />
+  <main id="main">
+    <Hero />
+    <Door />
+    <Manifesto />
+    <Lookbook />
+    <Prices />
+    <Marquee />
+    <Barbers />
+    <Reviews />
+    <FindUs />
+  </main>
+  <FooterCta />
+  <MobileBar />
+</Base>
+
+<script>
+  // Мобильная панель записи: видна, когда ни кнопка в хиро, ни футер не в кадре
+  const bar = document.querySelector<HTMLElement>('[data-mbar]');
+  const watch = [document.querySelector('.hero__cta'), document.querySelector('.fcta')].filter(Boolean) as Element[];
+  if (bar && watch.length) {
+    const seen = new Set<Element>();
+    const io = new IntersectionObserver((es) => {
+      es.forEach((e) => (e.isIntersecting ? seen.add(e.target) : seen.delete(e.target)));
+      bar.classList.toggle('is-on', seen.size === 0);
+    });
+    watch.forEach((el) => io.observe(el));
+  }
+
+  // Карта Яндекса подгружается, когда секция подходит к экрану (не на старте страницы)
+  document.querySelectorAll<HTMLElement>('[data-map-src]').forEach((box) => {
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      const f = document.createElement('iframe');
+      f.src = box.dataset.mapSrc!; f.title = 'Угол 361 на Яндекс Картах'; f.loading = 'lazy'; f.allowFullscreen = true;
+      f.addEventListener('load', () => box.querySelector('.find__map-wait')?.remove());
+      box.append(f);
+    }, { rootMargin: '600px 0px' });
+    io.observe(box);
+  });
+</script>
+<script>
+  import { initMotion } from '../scripts/motion';
+  initMotion();
+</script>

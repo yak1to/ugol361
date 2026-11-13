@@ -1,0 +1,38 @@
+---
+import { rub } from '../../config/site';
+interface Props { name: string; price: number; firstVisit?: number }
+const { name, price, firstVisit } = Astro.props;
+---
+<li class="price-row">
+  <span class="price-row__name">{name}</span>
+  <span class="price-row__lead" aria-hidden="true"></span>
+  <span class="price-row__price">{rub(price)}</span>
+  {firstVisit && <span class="price-row__note numeral">в первый раз {rub(firstVisit)}</span>}
+</li>
+<style>
+  .price-row {
+    position: relative; isolation: isolate; list-style: none;
+    display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; column-gap: .4em;
+    padding: .22em var(--gutter) .12em;
+    font: 600 clamp(24px, 6.4vw, 84px)/1 var(--font-display); text-transform: uppercase; letter-spacing: -.01em;
+    border-top: 2px solid var(--ink);
+  }
+  /* «свет окна»: заливка растёт слева направо, только transform */
+  .price-row::before {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: radial-gradient(90% 160% at 30% 50%, var(--window-hot), var(--window));
+    transform: scaleX(0); transform-origin: left; transition: transform 220ms var(--ease-out);
+  }
+  .price-row:hover::before { transform: scaleX(1); }
+  .price-row__name { white-space: nowrap; }
+  .price-row__lead { border-bottom: .09em dotted currentColor; transform: translateY(-.14em); min-width: 1em; }
+  .price-row__price { font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+  .price-row__note {
+    grid-column: 1 / -1; justify-self: end; font-size: clamp(15px, 1.4vw, 20px); text-transform: none;
+    letter-spacing: 0; padding: .3em 0 .2em; font-weight: 400;
+  }
+  @media (max-width: 760px) {
+    .price-row { padding-top: .3em; padding-bottom: .22em; }
+    .price-row__note { justify-self: start; padding: .35em 0 .1em; font-size: 16px; }
+  }
+</style>

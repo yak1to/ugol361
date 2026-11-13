@@ -1,0 +1,19 @@
+---
+// Скролл = градусы: 000° → 361°. Значение задаёт JS (Фаза 4) через data-value.
+interface Props { value?: number; class?: string }
+const { value = 0, class: cls = '' } = Astro.props;
+const pad = (n: number) => String(n).padStart(3, '0');
+---
+<div class={`deg ${value >= 361 ? 'is-full' : ''} ${cls}`} data-degree-counter aria-hidden="true">
+  <span class="deg__num">{pad(value)}</span><span class="deg__sign">°</span>
+</div>
+<style>
+  .deg {
+    display: inline-flex; align-items: flex-start; gap: .02em;
+    font: 600 clamp(22px, 2vw, 30px)/1 var(--font-display); font-variant-numeric: tabular-nums lining-nums;
+    color: currentColor; transition: color 200ms;
+  }
+  .deg__sign { font-family: var(--font-numeral); font-style: italic; font-size: .8em; }
+  .deg.is-full { color: var(--window-hot); animation: deg-click 420ms var(--ease-snap); }
+  @keyframes deg-click { 0% { transform: scale(1); } 35% { transform: scale(1.18) rotate(-4deg); } 100% { transform: scale(1); } }
+</style>

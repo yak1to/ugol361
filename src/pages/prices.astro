@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import Logo from '../components/ui/Logo.astro';
+import Prices from '../components/sections/Prices.astro';
+import Marquee from '../components/sections/Marquee.astro';
+import FooterCta from '../components/sections/FooterCta.astro';
+import MobileBar from '../components/sections/MobileBar.astro';
+import { site, rub } from '../config/site';
+import { url } from '../lib/url';
+---
+<Base title={`Цены — ${site.name}`} description={`Прайс барбершопа ${site.name}: стрижка ${rub(site.prices.items[0].price)}, первая стрижка ${rub(site.prices.promo.price)}.`}>
+  <header class="facade pbar">
+    <a href={url()} class="pbar__home" aria-label="На главную"><Logo /></a>
+    <a class="link-under caption" href={url()}>На главную</a>
+  </header>
+  <main id="main">
+    <Prices full />
+    <section class="inside pnotes">
+      <ul>
+        <li><b>Первый раз у нас?</b> Стрижка {rub(site.prices.promo.price)} вместо {rub(site.prices.promo.oldPrice)}, стрижка с бородой {rub(site.prices.items[1].firstVisit!)}.</li>
+        <li><b>Окрашивание и завивка</b> зависят от длины. Точную цену скажет барбер, когда посмотрит.</li>
+        <li><b>Подарочный сертификат</b> можно взять на любую сумму.</li>
+        <li><b>Детей</b> стрижём тоже.</li>
+      </ul>
+    </section>
+    <Marquee />
+  </main>
+  <FooterCta />
+  <MobileBar />
+</Base>
+<style>
+  .pbar { display: flex; justify-content: space-between; align-items: center; padding: 20px var(--gutter); }
+  .pbar__home { width: 140px; color: var(--paper); }
+  .pnotes { padding: 0 var(--gutter) clamp(72px, 9vw, 140px); }
+  .pnotes ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; max-width: 62ch; font-size: var(--fs-lead); line-height: 1.2; }
+  .pnotes b { font-weight: 700; }
+</style>
+<script>
+  // Мобильная панель записи: видна, когда ни кнопка в хиро, ни футер не в кадре
+  const bar = document.querySelector<HTMLElement>('[data-mbar]');
+  const watch = [document.querySelector('.hero__cta'), document.querySelector('.fcta')].filter(Boolean) as Element[];
+  if (bar && watch.length) {
+    const seen = new Set<Element>();
+    const io = new IntersectionObserver((es) => {
+      es.forEach((e) => (e.isIntersecting ? seen.add(e.target) : seen.delete(e.target)));
+      bar.classList.toggle('is-on', seen.size === 0);
+    });
+    watch.forEach((el) => io.observe(el));
+  }
+
+</script>
+<script>
+  import { initMotion } from '../scripts/motion';
+  initMotion();
+</script>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 560" class="door">
+  <!-- Их вход: красная рамка, чёрные стеклянные створки, хром-ручка, столб справа -->
+  <rect x="0" y="0" width="400" height="560" fill="var(--door-red, #E3062C)"/>
+  <rect x="18" y="18" width="364" height="542" fill="var(--ink, #1A1A18)"/>
+  <g fill="#2a2a27" stroke="#0e0e0d" stroke-width="6">
+    <rect x="36" y="36" width="158" height="510"/>
+    <rect x="206" y="36" width="158" height="510"/>
+  </g>
+  <rect class="door-handle" x="182" y="200" width="8" height="190" rx="4" fill="#cfcfcf"/>
+  <rect x="210" y="200" width="8" height="190" rx="4" fill="#cfcfcf"/>
+  <g class="door-pole" transform="translate(300 230)">
+    <rect x="-14" y="-10" width="28" height="12" rx="4" fill="#111"/>
+    <clipPath id="pole-clip"><rect x="-10" y="2" width="20" height="96" rx="9"/></clipPath>
+    <g clip-path="url(#pole-clip)">
+      <rect x="-10" y="2" width="20" height="96" fill="#F4F1EC"/>
+      <path fill="var(--door-red, #E3062C)" d="M-30 0 l20 -12 v12 l-20 12 Z M-30 24 l40 -24 v12 l-40 24 Z M-30 48 l40 -24 v12 l-40 24 Z M-30 72 l40 -24 v12 l-40 24 Z M-30 96 l40 -24 v12 l-40 24 Z"/>
+      <path fill="var(--pole-blue, #0A33B0)" d="M-30 12 l40 -24 v6 l-40 24 Z M-30 36 l40 -24 v6 l-40 24 Z M-30 60 l40 -24 v6 l-40 24 Z M-30 84 l40 -24 v6 l-40 24 Z"/>
+    </g>
+    <rect x="-14" y="98" width="28" height="12" rx="4" fill="#111"/>
+  </g>
+</svg>

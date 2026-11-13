@@ -1,0 +1,30 @@
+---
+import Sticker from '../ui/Sticker.astro';
+import { site } from '../../config/site';
+// Лента продублирована: в фазе 4 едет по кругу. Второй экземпляр скрыт от скринридеров
+---
+<section class="marquee" aria-label="Удобства">
+  <div class="marquee__track" data-marquee>
+    {[0, 1].map((copy) => (
+      <ul class="marquee__group" aria-hidden={copy === 1 ? 'true' : undefined}>
+        {site.features.map((f, i) => (
+          <li class="marquee__item">
+            <Sticker id={f.id} size="clamp(72px, 8vw, 116px)" class={`marquee__st r${i % 3}`} />
+            <span>{f.label}</span>
+          </li>
+        ))}
+      </ul>
+    ))}
+  </div>
+</section>
+
+<style>
+  .marquee { background: var(--ink); color: var(--paper); overflow: hidden; padding: 28px 0; transform: rotate(-1.6deg); margin: -20px -2vw; position: relative; z-index: 2; }
+  .marquee__track { display: flex; width: max-content; }
+  .marquee__group { display: flex; list-style: none; margin: 0; padding: 0; }
+  .marquee__item { display: flex; align-items: center; gap: 16px; padding-right: clamp(40px, 5vw, 80px);
+    font: 600 clamp(26px, 3.4vw, 54px)/1 var(--font-display); text-transform: uppercase; white-space: nowrap; }
+  .marquee :global(.r0) { transform: rotate(-8deg); }
+  .marquee :global(.r1) { transform: rotate(6deg); }
+  .marquee :global(.r2) { transform: rotate(-3deg); }
+</style>

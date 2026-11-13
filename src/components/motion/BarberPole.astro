@@ -1,0 +1,23 @@
+---
+// Бесконечная спираль барберского столба на CSS (прелоадер/индикатор)
+interface Props { height?: string; class?: string }
+const { height = '120px', class: cls = '' } = Astro.props;
+---
+<span class={`pole ${cls}`} style={`--h:${height}`} role="progressbar" aria-label="Загрузка"><span class="pole__glass"></span></span>
+<style>
+  .pole { --w: calc(var(--h) * .22); display: inline-flex; flex-direction: column; align-items: center; }
+  .pole::before, .pole::after { content: ''; width: calc(var(--w) * 1.35); height: calc(var(--w) * .45); background: var(--ink); border-radius: 4px; }
+  .pole__glass {
+    position: relative; width: var(--w); height: var(--h); overflow: hidden; border-radius: calc(var(--w) / 2);
+    box-shadow: inset -5px 0 8px rgba(0,0,0,.25), inset 4px 0 6px rgba(255,255,255,.4);
+  }
+  /* полосы на внутреннем слое, едем только transform: период по вертикали = 28px / cos(35°) */
+  .pole__glass::before {
+    content: ''; position: absolute; left: 0; right: 0; top: calc(-28px / cos(35deg)); bottom: 0; z-index: -1;
+    background: repeating-linear-gradient(-35deg,
+      var(--door-red) 0 8px, var(--paper) 8px 14px, var(--pole-blue) 14px 22px, var(--paper) 22px 28px);
+    animation: pole-spin 900ms linear infinite;
+  }
+  .pole__glass { isolation: isolate; }
+  @keyframes pole-spin { to { transform: translateY(calc(28px / cos(35deg))); } }
+</style>
