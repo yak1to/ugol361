@@ -1,7 +1,16 @@
 /**
- * ВЕСЬ контент и бренд салона. Чтобы собрать сайт для другого барбершопа,
- * меняется только этот файл + фото в src/assets/photos + 2 SVG (логотип, окно).
+ * Контент и бренд салона. То, что владелец меняет сам через Telegram-бота
+ * (цены, контакты, часы, фото работ, ссылка записи, мастера), лежит в src/content/site.json.
+ * Здесь — структура, тексты и оформление. Для другого салона: этот файл + site.json + фото + 2 SVG.
  */
+import data from '../content/site.json';
+
+const digits = (s: string) => s.replace(/\D/g, '');
+const SOCIAL_LABELS: Record<string, string> = {
+  telegram: 'Telegram', whatsapp: 'WhatsApp', youtube: 'YouTube', max: 'MAX', vk: 'VK', instagram: 'Instagram',
+};
+
+type PriceItem = { name: string; price: number; firstVisit?: number };
 
 export const site = {
   name: 'Угол 361',
@@ -10,45 +19,28 @@ export const site = {
 
   address: {
     city: 'Москва',
-    street: 'Нахимовский проспект, 40',
-    hint: 'вход через цветочный',
-    metro: 'Профсоюзная',
-    metroDistance: '200 м',
+    ...data.address,
     geo: { lat: 55.677458, lon: 37.565434 }, // из карточки организации в Яндекс Картах
   },
 
-  phone: { display: '+7 (901) 901-63-63', href: 'tel:+79019016363' },
+  phone: { display: data.phone, href: `tel:+${digits(data.phone)}` },
 
-  // На стекле двери 10:00–22:00, в агрегаторах 11:00–22:00 — уточнить у владельца
-  hours: { label: 'каждый день 11–22', open: '11:00', close: '22:00' },
+  hours: data.hours,
 
   rating: {
-    value: 5.0,
-    votes: 134,
-    reviews: 117,
+    ...data.rating,
     url: 'https://yandex.ru/maps/org/ugol_361/92765387360/reviews/',
   },
 
-  booking: { label: 'Записаться', href: 'https://n2411682.yclients.com/company/2089851/personal/menu?o=' }, // онлайн-запись YCLIENTS
+  // куда ведёт «Записаться» (меняется через бота)
+  booking: { label: 'Записаться', href: data.booking },
 
-  socials: [
-    { id: 'telegram', label: 'Telegram', href: 'https://t.me/ugol361' },
-    { id: 'whatsapp', label: 'WhatsApp', href: 'https://wa.me/79019016363' },
-    { id: 'youtube', label: 'YouTube', href: 'https://www.youtube.com/@Угол361' },
-    { id: 'max', label: 'MAX', href: '#' }, // TODO: ссылка MAX
-  ],
+  // пустые ссылки на сайте не показываются
+  socials: Object.entries(data.socials as Record<string, string>)
+    .filter(([, href]) => href)
+    .map(([id, href]) => ({ id, label: SOCIAL_LABELS[id] ?? id, href })),
 
-  prices: {
-    date: 'цены на 3 ноября',
-    items: [
-      { name: 'Стрижка', price: 2600 },
-      { name: 'Стрижка + борода', price: 3700, firstVisit: 3170 },
-      { name: 'Мелирование', price: 5000 },
-      { name: 'Блонд', price: 6000 },
-      { name: 'Завивка', price: 7000 },
-    ],
-    promo: { name: 'Первая стрижка', price: 2170, oldPrice: 2600, note: 'для тех, кто у нас впервые' },
-  },
+  prices: { ...data.prices, items: data.prices.items as PriceItem[] },
 
   features: [
     { id: 'dog', label: 'Можно с собакой до 35 см' },
@@ -77,25 +69,10 @@ export const site = {
   ],
   manifestoNote: 'И после стрижки покажем, как уложить это дома за пару минут.',
 
-  // Фото из публичной карточки — только для демо. Нужны оригиналы и согласие клиентов.
-  lookbook: [
-    { file: '01.jpg', tag: '[название стрижки]', alt: 'Парень с платиновым блондом прикрывает лицо рукой' },
-    { file: '07.jpg', tag: '[название стрижки]', alt: 'Ярко-красное окрашивание с длинной чёлкой' },
-    { file: '03.jpg', tag: '[название стрижки]', alt: 'Светлые кудри, красная куртка' },
-    { file: '06.jpg', tag: '[название стрижки]', alt: 'Белые волосы ниже ушей и очки' },
-    { file: '09.jpg', tag: '[название стрижки]', alt: 'Крупный план текстурной чёлки' },
-    { file: '05.jpg', tag: '[название стрижки]', alt: 'Кудри и тёмные очки' },
-    { file: '08.jpg', tag: '[название стрижки]', alt: 'Платиновые шторки, селфи в зале' },
-    { file: '12.jpg', tag: '[название стрижки]', alt: 'Кудрявый блонд, вид со спины в кресле' },
-    { file: '10.jpg', tag: '[название стрижки]', alt: 'Объёмная завивка и большие очки' },
-  ],
+  // Фото работ. Присланные через бота лежат в src/assets/photos/lookbook/
+  lookbook: data.lookbook,
 
-  // Имена и специализации — из отзывов на Яндексе (чаще всего хвалят этих мастеров). Уточнить у владельца, фото — от него
-  barbers: [
-    { name: 'Артём', role: 'Стрижки, подбор формы под лицо', photo: null },
-    { name: 'Егор', role: 'Завивка и окрашивание', photo: null },
-    { name: 'Миша', role: 'Стрижки, борода', photo: null },
-  ],
+  barbers: data.barbers,
 
   // Только темы из отзывов на Яндексе, без выдуманных цитат
   reviewTopics: [
@@ -161,7 +138,7 @@ export const site = {
       graffiti: "'Rubik Spray Paint', 'Oswald Variable', sans-serif",
     },
   },
-} as const;
+};
 
 export type Site = typeof site;
 
